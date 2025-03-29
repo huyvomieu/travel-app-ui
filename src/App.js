@@ -14,6 +14,7 @@ function App() {
                     }
                     return (
                         <Route
+                            key={key}
                             path={route.path}
                             element={
                                 <Layout>

@@ -1,0 +1,108 @@
+.wrapper {
+    line-height: normal;
+    font-family: var(--font-famaly);
+}
+.title-page {
+    margin-bottom: 40px;
+}
+.title {
+    color: #353535;
+    font-size: 3.8rem;
+    font-style: normal;
+    font-weight: 700;
+}
+
+.sub {
+    color: #ccc;
+    font-size: 1.8rem;
+    font-style: normal;
+    font-weight: 500;
+}
+.report {
+    display: flex;
+    justify-content: space-between;
+    margin-right: 56px;
+}
+.box {
+    width: 328px;
+    height: 280px;
+    border-radius: 16px;
+    border: 1px solid rgba(187, 187, 187, 0.5);
+    background: #fff;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
+
+.step-1 {
+    margin-top: 20px;
+}
+
+.step-text {
+    color: #ccc;
+    font-size: 2.1rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.step-icon {
+    font-size: 2.4rem;
+}
+
+.step-2 {
+    margin-top: 20px;
+}
+
+.recent-message {
+    margin: 20px 0;
+    color: #353535;
+    font-size: 2.5rem;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.message-box {
+    min-height: 262px;
+    margin-right: 56px;
+    border-radius: 24px;
+    border: 1px solid rgba(187, 187, 187, 0.5);
+    background: #fff;
+}
+.inner {
+    margin: 40px;
+}
+.message-item {
+    height: 66;
+    display: grid;
+    grid-template-columns: 200px 260px 200px 200px auto;
+    align-items: center;
+    padding: 16px 0;
+    color: #000;
+    font-size: 15px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
+.avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.name {
+}
+
+.order_id {
+    color: var(--primary);
+}
+
+.status {
+    color: var(--success);
+}
+
+.time {
+}

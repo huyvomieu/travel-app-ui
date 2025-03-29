@@ -1,0 +1,12 @@
+.wrapper {
+}
+.container {
+    min-height: 1000px;
+    display: flex;
+}
+
+.content {
+    margin-top: var(--header-height);
+    margin-left: 60px;
+    flex: 1;
+}
