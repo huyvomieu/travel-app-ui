@@ -1,0 +1,15 @@
+.wrapper {
+    min-width: 140px;
+    height: 40px;
+    padding: 4px 8px;
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.primary {
+    background-color: var(--primary);
+    color: #fff;
+}
