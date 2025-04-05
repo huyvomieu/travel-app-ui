@@ -12,6 +12,7 @@
 .grid {
     display: grid;
     grid-template-columns: 30px 240px 240px 200px 160px auto;
+    color: #000;
 }
 
 .header > * {
@@ -34,18 +35,6 @@
     .full-name {
         margin-left: 8px;
     }
-
-    .email {
-    }
-
-    .username {
-    }
-
-    .current-tour {
-    }
-
-    .total {
-    }
 }
 .box-select {
     width: 208px;
@@ -63,13 +52,19 @@
             background-color: #e5d9d9;
             cursor: pointer;
         }
-        &:hover {
+    }
+    .disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        button {
+            cursor: not-allowed;
         }
     }
     hr {
         background-color: #b7b5b5;
     }
 }
+
 .select-option {
     width: 208px;
     height: 30px;
@@ -83,8 +78,6 @@
 }
 .line {
     margin: 8px 0;
-}
-.list {
 }
 
 .list-item {
@@ -101,19 +94,7 @@
         justify-content: center;
     }
 
-    .full-name {
-    }
-
-    .email {
-    }
-
-    .username {
-    }
-
     .current-tour {
         color: var(--primary);
-    }
-
-    .total {
     }
 }

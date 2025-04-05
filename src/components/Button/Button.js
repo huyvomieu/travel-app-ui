@@ -4,14 +4,32 @@ import styles from './Button.module.scss';
 import { Link } from 'react-router-dom';
 
 const cx = classNames.bind(styles);
-function Button({ to, href, primary = false, outline = false, onClick, children, ...passProps }) {
+function Button({
+    to,
+    href,
+    small = false,
+    large = false,
+    primary = false,
+    secondary = false,
+    warning = false,
+    dark = false,
+    outline = false,
+    onClick,
+    children,
+    ...passProps
+}) {
     let Comp = 'button';
     const props = {
         onClick,
         ...passProps,
     };
     const classes = cx('wrapper', {
+        small,
+        large,
         primary,
+        secondary,
+        warning,
+        dark,
         outline,
     });
 
@@ -36,6 +54,11 @@ Button.propTypes = {
     outline: PropTypes.bool,
     onClick: PropTypes.func,
     children: PropTypes.node,
+    small: PropTypes.bool,
+    large: PropTypes.bool,
+    secondary: PropTypes.bool,
+    warning: PropTypes.bool,
+    dark: PropTypes.bool,
 };
 
 export default Button;

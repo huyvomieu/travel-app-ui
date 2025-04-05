@@ -1,5 +1,5 @@
 .wrapper {
-    min-width: 140px;
+    max-width: 180px;
     height: 40px;
     padding: 4px 8px;
     border-radius: 20px;
@@ -8,8 +8,28 @@
     align-items: center;
     cursor: pointer;
 }
+.small {
+    height: 36px;
+    padding: 2px 20px;
+    border-radius: 12px;
+}
 
 .primary {
     background-color: var(--primary);
     color: #fff;
+}
+.secondary {
+    color: #fff;
+    background-color: #6c757d;
+}
+.warning {
+    color: #212529;
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.dark {
+    color: #fff;
+    background-color: #6c757d;
+    border-color: #6c757d;
 }

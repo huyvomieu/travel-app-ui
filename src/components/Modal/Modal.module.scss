@@ -1,0 +1,41 @@
+.modal {
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 99999;
+}
+
+.wrapper {
+    min-width: 600px;
+    min-height: 132px;
+    margin-top: 60px;
+    border-radius: 12px;
+    border: 1px solid #000;
+    background: #f2f2f2;
+}
+
+.inner {
+    padding: 16px;
+}
+
+.header {
+    text-align: center;
+    padding-bottom: 16px;
+    color: #0728ff;
+    font-size: 2rem;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.body {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+}
