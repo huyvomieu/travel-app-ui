@@ -11,11 +11,13 @@ function Button({
     large = false,
     primary = false,
     secondary = false,
+    danger = false,
     warning = false,
     dark = false,
     outline = false,
     onClick,
     children,
+    classNames,
     ...passProps
 }) {
     let Comp = 'button';
@@ -24,10 +26,12 @@ function Button({
         ...passProps,
     };
     const classes = cx('wrapper', {
+        [classNames]: classNames,
         small,
         large,
         primary,
         secondary,
+        danger,
         warning,
         dark,
         outline,
@@ -57,8 +61,10 @@ Button.propTypes = {
     small: PropTypes.bool,
     large: PropTypes.bool,
     secondary: PropTypes.bool,
+    danger: PropTypes.bool,
     warning: PropTypes.bool,
     dark: PropTypes.bool,
+    classNames: PropTypes.object,
 };
 
 export default Button;

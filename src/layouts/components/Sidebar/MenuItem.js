@@ -2,21 +2,32 @@ import classNames from 'classnames/bind';
 import styles from './Sidebar.module.scss';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { useState } from 'react';
 
 const cx = classNames.bind(styles);
 
-function MenuItem({ to, content, icon }) {
+function MenuItem({ children, to, content, icon }) {
+    const [hideShow, setHideShow] = useState(true);
+    function handleClick(e) {
+        setHideShow(!hideShow);
+    }
+    let Tag = Link;
+    if (children) {
+        Tag = 'div';
+    }
     return (
-        <Link to={to}>
+        <Tag to={to} onClick={handleClick}>
             <div className={cx('menu-box')}>
                 <div className={cx('menu-icon')}>{icon}</div>
                 <p className={cx('menu-item')}>{content}</p>
             </div>
-        </Link>
+            <div className={cx('menu-children', { 'd-none': hideShow })}>{children}</div>
+        </Tag>
     );
 }
 
 MenuItem.propTypes = {
+    children: PropTypes.node,
     to: PropTypes.string,
     content: PropTypes.string,
     icon: PropTypes.node,

@@ -54,3 +54,13 @@
 .bottom-menu {
     margin-top: 260px;
 }
+
+.menu-children {
+    &:active {
+        transition: 1s;
+    }
+}
+
+.d-none {
+    display: none;
+}

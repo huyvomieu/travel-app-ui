@@ -1,12 +1,25 @@
 .wrapper {
-    position: fixed;
-    left: 50%;
-    top: var(--header-height);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 12px;
     border: 1px solid transparent;
     border-radius: 0.25rem;
-    display: block;
+}
+
+.hidden {
+    position: fixed;
+    left: 50%;
+    top: var(--header-height);
     animation: fadeout 4s forwards;
+    .close {
+        display: none;
+    }
+}
+
+.close {
+    font-size: 2rem;
+    cursor: pointer;
 }
 
 @keyframes fadeout {
@@ -15,11 +28,13 @@
         opacity: 0;
     }
 }
+
 .primary {
     color: #004085;
     background-color: #cce5ff;
     border-color: #b8daff;
 }
+
 .success {
     color: #155724;
     background-color: #d4edda;

@@ -25,7 +25,17 @@ function Sidebar() {
             </Link>
             <div className={cx('main-menu')}>
                 <MenuItem to="/" content="Tổng quan" icon={<IoHomeOutline />} />
-                <MenuItem to="/items" content="Sản phẩm" icon={<MdOutlineTravelExplore />} />
+                <MenuItem
+                    content="Chuyến đi"
+                    icon={<MdOutlineTravelExplore />}
+                    children={
+                        <>
+                            <MenuItem to="/category" content="Danh mục" />
+                            <MenuItem to="/items" content="Danh sách chuyến bay" />
+                        </>
+                    }
+                />
+
                 <MenuItem to="/order" content="Đơn hàng" icon={<IoCartOutline />} />
                 <MenuItem to="/customers" content="Khách hàng" icon={<FiUser />} />
                 <MenuItem to="/report" content="Báo cáo" icon={<IoTrendingDownOutline />} />
