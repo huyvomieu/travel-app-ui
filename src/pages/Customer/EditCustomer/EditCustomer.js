@@ -3,8 +3,8 @@ import styles from './EditCustomer.module.scss';
 import { useParams } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
-import BoxCustomer from '../../components/BoxCustomer';
-import { getCustomer } from '../../services/CustomerService';
+import BoxCustomer from '../../../components/BoxCustomer';
+import { getCustomer } from '../../../services/CustomerService';
 
 const cx = classNames.bind(styles);
 

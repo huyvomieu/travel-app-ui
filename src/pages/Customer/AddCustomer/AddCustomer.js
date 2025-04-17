@@ -1,7 +1,7 @@
 import classNames from 'classnames/bind';
 import styles from './AddCustomer.module.scss';
 
-import BoxCustomer from '../../components/BoxCustomer/BoxCustomer';
+import BoxCustomer from '../../../components/BoxCustomer';
 
 const cx = classNames.bind(styles);
 
