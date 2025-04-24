@@ -1,0 +1,59 @@
+.wrapper {
+    flex: 1;
+    border-radius: 3px;
+    background-color: #fff;
+}
+
+.inner {
+    height: 100%;
+    padding: 16px;
+}
+
+.box-upload-img {
+    position: relative;
+    min-height: 240px;
+    background-color: #fafbfc;
+}
+.btn-upload {
+    position: absolute;
+    margin: auto;
+    bottom: 18px;
+    left: 0;
+    right: 0;
+}
+
+.actions {
+    position: absolute;
+    bottom: -12px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+}
+.btn-delete,
+.btn-other {
+    margin-left: 4px;
+    background-color: #fff;
+    color: var(--primary);
+    cursor: pointer;
+}
+
+.img {
+    width: 100%;
+    height: 260px;
+    object-fit: cover;
+}
+.loaded ~ * {
+    display: none;
+}
+.error {
+    display: none;
+}
+.error:first-child {
+    display: none;
+}
+
+.d-none {
+    display: none;
+}

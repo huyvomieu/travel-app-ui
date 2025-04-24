@@ -1,0 +1,15 @@
+.wrapper {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 12px 0 12px;
+    border-top: 1px solid #c4cdd5;
+    .actions-right {
+        display: flex;
+        gap: 8px;
+    }
+}
+
+.hide {
+    visibility: hidden;
+    pointer-events: none;
+}

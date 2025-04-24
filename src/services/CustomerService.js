@@ -1,9 +1,9 @@
 import * as httpRequest from '../utils/httpRequest';
 
-export const getCustomer = async (id) => {
+export const getCustomer = async (id, params) => {
     try {
         const res = await httpRequest.get('user', {
-            params: { id },
+            params: { id, ...params },
         });
         return res;
     } catch (error) {

@@ -1,0 +1,20 @@
+.wrapper {
+    min-height: 160px;
+    border-radius: 3px;
+    background-color: #fff;
+}
+.inner {
+    height: 100%;
+    padding: 16px;
+}
+
+.status-value {
+    margin-left: 4px;
+    font-size: 1.4rem;
+}
+
+.btn-book {
+    background-color: #fff;
+    color: var(--primary);
+    cursor: pointer;
+}

@@ -1,7 +1,7 @@
 import * as Category from '../pages/Category';
 import * as Customer from '../pages/Customer';
+import * as Item from '../pages/Item';
 import Dashboard from '../pages/Dashboard';
-import Item from '../pages/Item';
 import Order from '../pages/Order';
 
 const publicRoutes = [
@@ -14,7 +14,9 @@ const publicRoutes = [
     { path: '/category', component: Category.list },
     { path: '/category/create', component: Category.create },
     { path: '/category/:id', component: Category.edit },
-    { path: '/items', component: Item },
+    { path: '/items', component: Item.list },
+    { path: '/items/create', component: Item.add },
+    { path: '/items/:id', component: Item.edit },
 ];
 
 const privateRoutes = [];

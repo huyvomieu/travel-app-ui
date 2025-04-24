@@ -1,15 +1,15 @@
 import * as httpRequest from '../utils/httpRequest';
 
-export const getDeleteCategory = async (id, type, params) => {
+export const getDeleteItem = async (id, type) => {
     try {
         if (type?.toUpperCase() === 'DELETE') {
-            const res = await httpRequest.delet('category', {
+            const res = await httpRequest.delet('Item', {
                 params: { id },
             });
             return res;
         } else {
-            const res = await httpRequest.get('category', {
-                params: { id, ...params },
+            const res = await httpRequest.get('Item', {
+                params: { id },
             });
             return res;
         }
@@ -19,13 +19,13 @@ export const getDeleteCategory = async (id, type, params) => {
     }
 };
 
-export const postPutCategory = async (body, type) => {
+export const postPutItem = async (body, type) => {
     try {
         if (type.toUpperCase() === 'PUT') {
-            const res = await httpRequest.put('category?id=' + body.Id, body);
+            const res = await httpRequest.put('Item?id=' + body.Id, body);
             return res;
         } else {
-            const res = await httpRequest.post('category', body);
+            const res = await httpRequest.post('Item', body);
             return res;
         }
     } catch (error) {

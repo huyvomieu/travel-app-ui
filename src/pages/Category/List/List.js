@@ -13,6 +13,7 @@ function List() {
             toBack="/items"
             toCreate="/category/create"
             callAPI={fetchAPI}
+            page="category"
         />
     );
 }

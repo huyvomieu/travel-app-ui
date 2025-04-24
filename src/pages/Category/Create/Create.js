@@ -1,11 +1,11 @@
 import classNames from 'classnames/bind';
 import styles from '../Category.module.scss';
-import CardDetail from '../../../components/Card/CardDetail';
+import CategoryForm from '../../../components/CategoryForm';
 
 const cx = classNames.bind(styles);
 
 function Create() {
-    return <CardDetail title="Thêm mới" breadcrumbs="Danh mục" toBack="/category" />;
+    return <CategoryForm />;
 }
 
 export default Create;

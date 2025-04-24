@@ -46,11 +46,16 @@
 
 .table {
     width: 100%;
+    font-size: 1.4rem;
+    // font-weight: 400;
     .row {
         display: flex;
+        align-items: center;
         min-height: 66px;
-        padding-top: 24px;
+        padding-top: 12px;
+        padding-bottom: 12px;
         border-radius: 2px;
+        cursor: pointer;
     }
 
     .row:not(.not-border) {
@@ -58,6 +63,12 @@
         &:hover {
             background-color: #f9fafb;
         }
+    }
+    .col {
+        min-width: 120px;
+        max-width: 200px;
+        width: 15%;
+        text-align: center;
     }
     .checkbox {
         min-width: 60px;
@@ -75,8 +86,15 @@
         min-width: 60px;
     }
     .name {
-        flex: 1;
-        display: flex;
-        align-items: center;
+        text-align: left;
+        min-width: 120px;
+        max-width: 360px;
+        width: 30%;
+    }
+    .active {
+        width: 10%;
+        color: #155724;
+        background-color: #d4edda;
+        border-radius: 9999px;
     }
 }
