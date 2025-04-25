@@ -22,7 +22,7 @@ export const getDeleteItem = async (id, type) => {
 export const postPutItem = async (body, type) => {
     try {
         if (type.toUpperCase() === 'PUT') {
-            const res = await httpRequest.put('Item?id=' + body.Id, body);
+            const res = await httpRequest.put('Item?id=' + body.key, body);
             return res;
         } else {
             const res = await httpRequest.post('Item', body);

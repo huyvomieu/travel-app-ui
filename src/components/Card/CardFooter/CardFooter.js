@@ -7,7 +7,7 @@ import Modal from '../../Modal';
 import Button from '../../Button';
 
 const cx = classNames.bind(styles);
-function CardFooter({ type, onClickConFirm, onClickSave }) {
+function CardFooter({ type, onClickConFirmDelete, onClickSave }) {
     const [isOpenModal, setIsOpenModal] = useState(false);
 
     return (
@@ -20,7 +20,7 @@ function CardFooter({ type, onClickConFirm, onClickSave }) {
                         setIsOpenModal(false);
                     }}
                     onConfirm={() => {
-                        onClickConFirm();
+                        onClickConFirmDelete();
                     }}
                 />
             )}
@@ -38,5 +38,11 @@ function CardFooter({ type, onClickConFirm, onClickSave }) {
         </div>
     );
 }
+
+CardFooter.propTypes = {
+    type: PropTypes.string,
+    onClickConFirmDelete: PropTypes.func,
+    onClickSave: PropTypes.func,
+};
 
 export default CardFooter;

@@ -9,3 +9,6 @@ export const SET_CATEGORY = 'SET_CATEGORY';
 export const SET_SEARCH_GUIDE = 'SET_SEARCH_GUIDE';
 export const SET_LIST_TOURGUIDE = 'SET_LIST_TOURGUIDE';
 export const SET_TOURGUIDE = 'SET_TOURGUIDE';
+
+// Alert
+export const SET_ALERT = 'SET_ALERT';

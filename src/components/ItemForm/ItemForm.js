@@ -1,10 +1,16 @@
 import classNames from 'classnames/bind';
 import styles from './ItemForm.module.scss';
 import { useState, useRef, useReducer, useEffect } from 'react';
-import CardItem from '../Card/CardItem/CardItem';
+import Tippy from '@tippyjs/react/headless';
+
+import CardItem from '../Card/CardItem';
 import BoxStatus from '../BoxStatus';
 import UploadImage from '../UploadImage';
 import CardFooter from '../Card/CardFooter';
+import Alert from '../Alert';
+import CardBox from '../Card/CardBox';
+
+import useDebounce from '../../hooks/useDebounce';
 import reducer, {
     initState,
     setSearchCategory,
@@ -14,33 +20,22 @@ import reducer, {
     setData,
     setListTourGuide,
     setSearchTourGuide,
+    getData,
+    setAlert,
 } from '../reducers/itemReducer';
 import { postPutItem, getDeleteItem } from '../../services/ItemService';
 import { getDeleteCategory } from '../../services/CategoryService';
 import { getCustomer } from '../../services/CustomerService';
-import { SET_SEARCH_CATEGORY } from '../reducers/constants';
-import Alert from '../Alert';
-import CardBox from '../Card/CardBox';
-import Tippy from '@tippyjs/react/headless';
-import useDebounce from '../../hooks/useDebounce';
 import { IoCloseOutline } from 'react-icons/io5';
 const cx = classNames.bind(styles);
 
 function ItemForm({ type = 'add', id }) {
     const [state, dispatch] = useReducer(reducer, initState);
-    const [alert, setAlert] = useState(false);
     const [tippy, setTippy] = useState(false);
     const [tippyTourGuide, setTippyTourGuide] = useState(false);
 
     const categorydebounced = useDebounce(state.searchCategory, 500);
     const guidedebounced = useDebounce(state.searchTourGuide, 500);
-    useEffect(() => {
-        const fetchData = async () => {
-            // const res = await getDeleteCategory(id);
-            // dispatch(getData(res));
-        };
-        fetchData();
-    }, [id, type]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -73,23 +68,41 @@ function ItemForm({ type = 'add', id }) {
         fetchData();
     }, [guidedebounced]);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            if (id) {
+                const res = await getDeleteItem(id);
+
+                dispatch(getData(res));
+            }
+        };
+        fetchData();
+    }, [id, type]);
+
     const uploadImageRef = useRef();
 
     function handleClickSave() {
-        console.log(state.data);
-
         const fetchAPI = async () => {
-            const result = await uploadImageRef.current?.getLinkImage();
-            if (result) {
-                state.data.pic = result;
-                const res = await postPutItem(state.data, 'POST');
-                if (res.status === 201) {
-                    setAlert(true);
+            if (type === 'edit') {
+                const res = await postPutItem(state.data, 'PUT');
+                if (res.status === 200) {
+                    dispatch(setAlert({ active: true, content: 'Cập nhật Tour thành công!' }));
                 } else {
-                    throw new Error(res);
+                    dispatch(setAlert({ active: true, content: 'Cập nhật Tour thất bại!' }));
                 }
             } else {
-                throw new Error('Lỗi tải ảnh lên');
+                const result = await uploadImageRef.current?.getLinkImage();
+                if (result) {
+                    state.data.pic = result;
+                    const res = await postPutItem(state.data, 'POST');
+                    if (res.status === 201) {
+                        dispatch(setAlert({ active: true, content: 'Thêm mới Tour thành công!' }));
+                    } else {
+                        throw new Error(res);
+                    }
+                } else {
+                    throw new Error('Lỗi tải ảnh lên');
+                }
             }
         };
         fetchAPI();
@@ -99,14 +112,30 @@ function ItemForm({ type = 'add', id }) {
         dispatch(setCategory(item));
         setTippy(false);
     }
+
     function handleClickGuide(guide) {
         dispatch(setTourGuide(guide));
         setTippyTourGuide(false);
     }
+    function handleConFirmDelete() {
+        const fetchAPI = async () => {
+            try {
+                const res = await getDeleteItem(state.data.key, 'DELETE');
+                if (res.status === 200) {
+                    dispatch(setAlert({ active: true, content: 'Xóa Tour thành công!' }));
+                } else {
+                    dispatch(setAlert({ active: true, content: 'Xóa Tour thất bại!, Có lỗi xảy ra!' }));
+                }
+            } catch (error) {
+                dispatch(setAlert({ active: true, content: 'Xóa Tour thất bại!, Có lỗi xảy ra!', danger: true }));
+            }
+        };
+        fetchAPI();
+    }
 
     return (
         <div className={cx('wrapper')}>
-            {alert && <Alert content="Thêm tour thành công!" success />}
+            {state.alert && <Alert content={state.alertContent} success />}
             <div className={cx('inner')}>
                 <div className={cx('main-layout')}>
                     <div className={cx('main-card')}>
@@ -214,7 +243,7 @@ function ItemForm({ type = 'add', id }) {
                                 </div>
                             )}
                         </CardBox>
-                        <UploadImage src={state.ImagePath} ref={uploadImageRef} className={cx('avatar-card')} />
+                        <UploadImage src={state.data.pic} ref={uploadImageRef} className={cx('avatar-card')} />
                     </div>
                 </div>
                 <div className={cx('row')}>
@@ -265,7 +294,7 @@ function ItemForm({ type = 'add', id }) {
                     </CardBox>
                 </div>
                 <div style={{ marginBottom: '20px' }}></div>
-                <CardFooter type={type} onClickSave={handleClickSave} />
+                <CardFooter type={type} onClickSave={handleClickSave} onClickConFirmDelete={handleConFirmDelete} />
             </div>
         </div>
     );

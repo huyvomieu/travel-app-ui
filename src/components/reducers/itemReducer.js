@@ -6,6 +6,8 @@ import {
     SET_LIST_TOURGUIDE,
     SET_CATEGORY,
     SET_TOURGUIDE,
+    GET_DATA,
+    SET_ALERT,
 } from './constants';
 
 export const initState = {
@@ -37,6 +39,10 @@ export const initState = {
     searchTourGuide: '',
     listTourGuide: [],
     tourGuideName: '',
+
+    alert: false,
+    alertContent: '',
+    alertStyle: 'success',
 };
 export const setData = (payload, prop) => {
     return {
@@ -84,6 +90,20 @@ export const setTourGuide = (payload) => {
         type: SET_TOURGUIDE,
     };
 };
+export const setAlert = (payload) => {
+    return {
+        payload,
+        type: SET_ALERT,
+    };
+};
+
+export const getData = (payload) => {
+    return {
+        type: GET_DATA,
+        payload,
+    };
+};
+
 function reducer(state, aciton) {
     switch (aciton.type) {
         case SET_DATA:
@@ -124,8 +144,6 @@ function reducer(state, aciton) {
                 listCategory: aciton.payload,
             };
         case SET_SEARCH_GUIDE:
-            console.log(aciton.payload);
-
             return {
                 ...state,
                 searchTourGuide: aciton.payload,
@@ -135,7 +153,23 @@ function reducer(state, aciton) {
                 ...state,
                 listTourGuide: aciton.payload,
             };
+        case GET_DATA:
+            const category = state.listCategory.filter((category) => category.Id === aciton.payload.categoryId);
 
+            return {
+                ...state,
+                data: aciton.payload,
+                categoryName: category[0]?.Name,
+            };
+        case SET_ALERT:
+            console.log(aciton.payload);
+
+            return {
+                ...state,
+                alert: aciton.payload.active,
+                alertContent: aciton.payload.content,
+                alertStyle: aciton.payload.danger ? 'danger' : 'success',
+            };
         default:
             throw new Error('Không lọt case nào trong Item Reducer');
     }

@@ -5,7 +5,7 @@ import { RiArrowDownSFill } from 'react-icons/ri';
 import { IoSearch } from 'react-icons/io5';
 import { useEffect, useState } from 'react';
 import Breadcrumbs from '../../Breadcrumbs/Breadcrumbs';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 const cx = classNames.bind(styles);
 function CardList({ title, breadcrumbs, toBack, toCreate, callAPI, page }) {
     const [dataArray, setDataArray] = useState([]);
@@ -19,7 +19,6 @@ function CardList({ title, breadcrumbs, toBack, toCreate, callAPI, page }) {
         fetchAPI();
     }, []);
 
-    function handleClickRow(to) {}
     return (
         <div className={cx('wrapper')}>
             <div className={cx('inner')}>
@@ -102,9 +101,14 @@ function CardList({ title, breadcrumbs, toBack, toCreate, callAPI, page }) {
                                                     <td className={cx('col')}>{data.timeTour + ' ' + data.dateTour}</td>
                                                     <td className={cx('col')}>${data.price}</td>
                                                     <td className={cx('col')}>{data.bed}</td>
-                                                    <td className={cx('col', { active: true })}>
-                                                        {!data.status && 'Hiển thị'}
-                                                        {data.status && 'Không hiển thị'}
+                                                    <td
+                                                        className={cx('col', {
+                                                            active: data.status,
+                                                            'not-active': !data.status,
+                                                        })}
+                                                    >
+                                                        {data.status && 'Hiển thị'}
+                                                        {!data.status && 'Không hiển thị'}
                                                     </td>
                                                 </tr>
                                             );
