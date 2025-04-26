@@ -1,0 +1,21 @@
+.wrapper {
+    position: relative;
+}
+.icon {
+    position: absolute;
+    width: 1.6rem;
+    height: 1.6rem;
+    top: 1rem;
+    left: 1rem;
+}
+
+.input {
+    width: 300px;
+    height: 40px;
+    padding: 8px 12px 8px 32px;
+    border: 1px solid #e5e5e5;
+    border-radius: 6px;
+    &:focus-visible {
+        border: 2px solid #0a0a0a;
+    }
+}
