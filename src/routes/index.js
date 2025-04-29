@@ -2,11 +2,13 @@ import * as Category from '../pages/Category';
 import * as Customer from '../pages/Customer';
 import * as Item from '../pages/Item';
 import Dashboard from '../pages/Dashboard';
-import Order from '../pages/Order';
+import OrderList from '../pages/Order/OrderList';
+import OrderDetail from '../pages/Order/OrderDetail';
 
 const publicRoutes = [
     { path: '/', component: Dashboard },
-    { path: '/order', component: Order },
+    { path: '/order', component: OrderList },
+    { path: '/order/:id', component: OrderDetail },
     { path: '/report', component: Dashboard },
     { path: '/customers', component: Customer.default },
     { path: '/customers/create', component: Customer.addCustomer },

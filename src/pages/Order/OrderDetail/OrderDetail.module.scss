@@ -1,0 +1,231 @@
+.wrapper {
+    max-width: 240mm;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: #fff;
+    border: 1px solid var(--border-color);
+}
+.inner {
+    padding: 24px;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+.header__left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.icon {
+    cursor: pointer;
+    font-size: 2rem;
+}
+.order-name {
+    font-size: 2rem;
+    color: var(--text-color);
+    font-weight: 500;
+}
+.header__right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+// Information Order- Customer
+.info {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.info__content {
+    display: grid;
+    gap: 4px;
+    .row {
+        display: flex;
+    }
+    .col-l {
+        width: 140px;
+        color: #6b7280;
+    }
+    .col-r {
+        font-weight: 400;
+        color: var(--text-color);
+    }
+}
+// Tour detail
+.tour-detail {
+    margin-bottom: 24px;
+}
+
+.tour-detail-box {
+    padding: 16px;
+    background-color: #f9fafb;
+    border: 1px solid var(--border-color);
+}
+.tour-detail-inner {
+    display: flex;
+    justify-content: space-between;
+}
+.tour-detail__left {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 4px;
+}
+
+.tour-title {
+    font-weight: 500;
+    font-size: 1.8rem;
+    color: var(--text-color);
+}
+.tour-address {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    color: #6b7280;
+}
+
+.tour-detail__right {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 4px;
+    color: #6b7280;
+}
+
+.tour-time {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+// Tour Price
+
+.pricing-detail {
+    margin-bottom: 24px;
+}
+
+.table {
+    overflow: auto;
+    table {
+        width: 100%;
+        font-size: 1.4rem;
+        line-height: 2rem;
+        text-indent: 0;
+        border-color: inherit;
+        border-collapse: collapse;
+    }
+    tr:has(th) {
+        height: 5rem;
+    }
+    tr {
+        transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 0.15s;
+    }
+    th,
+    td {
+        padding: 16px;
+    }
+    th {
+        color: #737373;
+        font-weight: 400;
+        text-align: left;
+        height: 4.8rem;
+    }
+    .total {
+        color: #111827;
+        font-weight: 600;
+    }
+}
+.text-right {
+    text-align: right !important;
+}
+// Tour
+.note {
+    margin-bottom: 24px;
+}
+.note-box {
+    padding: 20px;
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+}
+
+// Payment Infomation
+.info_payment {
+    margin-bottom: 24px;
+}
+.payment-box {
+    padding: 24px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+}
+
+.payment-content {
+}
+
+.payment-id {
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.btn_back {
+    display: flex;
+    justify-content: flex-end;
+}
+
+//
+
+.item_title {
+    font-weight: 500;
+    font-size: 1.8rem;
+    line-height: 2.8rem;
+    margin-bottom: 12px;
+}
+
+.bgc-nau {
+    background-color: #f9fafb;
+}
+
+.stt-success {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    color: #166534 !important;
+    background-color: #dcfce7;
+    border-color: #dcfce7;
+}
+.stt-processing {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    color: #fff !important;
+    background-color: #17a2b8;
+    border-color: #17a2b8;
+}
+
+.stt-cancel {
+    font-size: 12px;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    color: #fff !important;
+    background-color: #ef4444;
+    border-color: #dc3545;
+}
+
+// Print
+
+@media print {
+    .hide-on-print {
+        display: none;
+    }
+}
