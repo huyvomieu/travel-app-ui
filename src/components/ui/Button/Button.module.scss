@@ -1,0 +1,45 @@
+.wrapper {
+    padding: 8px 16px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+}
+.small {
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+.primary {
+    background-color: var(--primary);
+    color: #fff;
+}
+.secondary {
+    color: #fff;
+    background-color: #6c757d;
+}
+.danger {
+    color: #fff;
+    background-color: #dc3545;
+    border-color: #dc3545;
+}
+.warning {
+    color: #212529;
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.dark {
+    color: #fff;
+    background-color: #0a0a0a;
+    border-color: #6c757d;
+}
+
+.outline {
+    font-size: 1.6rem;
+    color: #0a0a0a;
+    background-color: #fff;
+    border: 1px solid #e5e5e5;
+}

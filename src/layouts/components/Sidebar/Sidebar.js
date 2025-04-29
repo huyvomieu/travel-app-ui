@@ -9,29 +9,28 @@ import {
 } from 'react-icons/io5';
 import { FiUser } from 'react-icons/fi';
 import { MdOutlineTravelExplore } from 'react-icons/md';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import MenuItem from './MenuItem';
 
 const cx = classNames.bind(styles);
 
 function Sidebar() {
+    const navigate = useNavigate();
     return (
-        <aside className={cx('wrapper')}>
-            <Link to="/">
-                <div className={cx('logo-box')}>
-                    <span className={cx('logo')}>HT</span>
-                    <h1 className={cx('name')}>Travel App</h1>
-                </div>
-            </Link>
-            <div className={cx('main-menu')}>
+        <aside className={cx('wrapper', 'hide-on-print')}>
+            <div onClick={() => navigate('/')} className={cx('logo-box')}>
+                <span className={cx('logo')}>HT</span>
+                <span className={cx('name')}>Travel App</span>
+            </div>
+            <nav className={cx('nav')}>
                 <MenuItem to="/" content="Tổng quan" icon={<IoHomeOutline />} />
                 <MenuItem
-                    content="Chuyến đi"
+                    content="Tour"
                     icon={<MdOutlineTravelExplore />}
                     children={
                         <>
-                            <MenuItem to="/category" content="Danh mục" />
-                            <MenuItem to="/items" content="Danh sách chuyến bay" />
+                            <MenuItem to="/category" content="Danh mục Tour" />
+                            <MenuItem to="/items" content="Danh sách Tour" />
                         </>
                     }
                 />
@@ -39,9 +38,9 @@ function Sidebar() {
                 <MenuItem to="/order" content="Đơn hàng" icon={<IoCartOutline />} />
                 <MenuItem to="/customers" content="Khách hàng" icon={<FiUser />} />
                 <MenuItem to="/report" content="Báo cáo" icon={<IoTrendingDownOutline />} />
-            </div>
-            <div className={cx('bottom-menu')}>
                 <MenuItem to="/settings" content="Cài đặt" icon={<IoSettingsOutline />} />
+            </nav>
+            <div className={cx('bottom-menu')}>
                 <MenuItem to="/logout" content="Đăng xuất" icon={<IoLogOutOutline />} />
             </div>
         </aside>

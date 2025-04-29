@@ -1,12 +1,25 @@
 .wrapper {
+    height: 100vh;
+    display: flex;
+    color: var(--text-color);
+    overflow: hidden;
+    background-color: #f9fafb;
 }
 .container {
-    min-height: 1000px;
+    flex: 1;
+    overflow: hidden;
     display: flex;
+    flex-direction: column;
 }
 
 .content {
-    margin-top: var(--header-height);
-    margin-left: 2rem;
+    padding: 24px;
     flex: 1;
+    overflow-y: auto;
+}
+
+@media print {
+    .hide-on-print {
+        display: none;
+    }
 }
