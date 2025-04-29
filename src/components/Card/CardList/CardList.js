@@ -6,15 +6,25 @@ import { IoSearch } from 'react-icons/io5';
 import { useEffect, useState } from 'react';
 import Breadcrumbs from '../../Breadcrumbs/Breadcrumbs';
 import { useNavigate } from 'react-router-dom';
+import { useLoading } from '../../../components/context/LoadingContext';
+
 const cx = classNames.bind(styles);
 function CardList({ title, breadcrumbs, toBack, toCreate, callAPI, page }) {
     const [dataArray, setDataArray] = useState([]);
 
+    const { setLoading } = useLoading();
     const navigate = useNavigate();
     useEffect(() => {
         const fetchAPI = async () => {
-            const data = await callAPI();
-            setDataArray(data);
+            setLoading(true);
+            try {
+                const data = await callAPI();
+                setDataArray(data);
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setLoading(false);
+            }
         };
         fetchAPI();
     }, []);

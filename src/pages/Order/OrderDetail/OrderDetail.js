@@ -9,22 +9,34 @@ import { useNavigate, useParams } from 'react-router-dom';
 
 import { getOrderById } from '../../../services/OrderService';
 
+import { useLoading } from '../../../components/context/LoadingContext';
+
 const cx = classNames.bind(styles);
 function OrderDetail() {
     const [isPrinting, setIsPrinting] = useState(false);
     const [order, setOrder] = useState({});
 
-    const params = useParams();
+    // Loading
+    const { setLoading } = useLoading();
 
+    // Params
+    const params = useParams();
+    // navigate
     const navigate = useNavigate();
 
+    // Effect
     useEffect(() => {
         if (!params.id) return;
         const fetchData = async () => {
-            const res = await getOrderById(params.id);
-            console.log(res);
-
-            setOrder(res);
+            setLoading(true);
+            try {
+                const res = await getOrderById(params.id);
+                setOrder(res);
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setLoading(false);
+            }
         };
         fetchData();
     }, [params.id]);
@@ -187,7 +199,9 @@ function OrderDetail() {
                     </div>
                 </div>
                 <div className={cx('btn_back', 'hide-on-print')}>
-                    <Button outline>Quay lại</Button>
+                    <Button outline onClick={() => navigate('/order')}>
+                        Quay lại
+                    </Button>
                 </div>
             </div>
         </div>

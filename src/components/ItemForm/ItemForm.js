@@ -2,6 +2,7 @@ import classNames from 'classnames/bind';
 import styles from './ItemForm.module.scss';
 import { useState, useRef, useReducer, useEffect } from 'react';
 import Tippy from '@tippyjs/react/headless';
+import { useLoading } from '../../components/context/LoadingContext';
 
 import CardItem from '../Card/CardItem';
 import BoxStatus from '../BoxStatus';
@@ -37,16 +38,21 @@ function ItemForm({ type = 'add', id }) {
     const categorydebounced = useDebounce(state.searchCategory, 500);
     const guidedebounced = useDebounce(state.searchTourGuide, 500);
 
+    const { setLoading } = useLoading();
+
     useEffect(() => {
         const fetchData = async () => {
-            const res = await getDeleteCategory(null, 'GET', {
-                q: categorydebounced,
-                type: ['Id', 'Name'],
-            });
-            if (res) {
+            setLoading(true);
+            try {
+                const res = await getDeleteCategory(null, 'GET', {
+                    q: categorydebounced,
+                    type: ['Id', 'Name'],
+                });
                 dispatch(setListCategory(res));
-            } else {
-                throw new Error('Call API lỗi khi lấy list Category');
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setLoading(false);
             }
         };
         fetchData();

@@ -8,16 +8,25 @@ import CardFooter from '../Card/CardFooter';
 import reducer, { initState, setData, getData } from '../reducers/categoryReducer';
 import { postPutCategory, getDeleteCategory } from '../../services/CategoryService';
 import Alert from '../Alert';
+import { useLoading } from '../context/LoadingContext';
 const cx = classNames.bind(styles);
 
 function CategoryForm({ type = 'add', id }) {
     const [state, dispatch] = useReducer(reducer, initState);
     const [alert, setAlert] = useState(false);
 
+    const { setLoading } = useLoading();
     useEffect(() => {
         const fetchData = async () => {
-            const res = await getDeleteCategory(id);
-            dispatch(getData(res));
+            setLoading(true);
+            try {
+                const res = await getDeleteCategory(id);
+                dispatch(getData(res));
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setLoading(false);
+            }
         };
         if (id) {
             fetchData();
