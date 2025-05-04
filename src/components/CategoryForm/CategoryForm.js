@@ -36,17 +36,24 @@ function CategoryForm({ type = 'add', id }) {
 
     function handleClickSave() {
         const fetchAPI = async () => {
-            const result = await uploadImageRef.current?.getLinkImage();
-            if (result) {
-                state.ImagePath = result;
-                const res = await postPutCategory(state, 'POST');
-                if (res.status === 201) {
-                    setAlert(true);
+            try {
+                setLoading(true);
+                const result = await uploadImageRef.current?.getLinkImage();
+                if (result) {
+                    state.ImagePath = result;
+                    const res = await postPutCategory(state, 'POST');
+                    if (res.status === 201) {
+                        setAlert(true);
+                    } else {
+                        throw new Error('Lỗi thêm mới Category');
+                    }
                 } else {
-                    throw new Error('Lỗi thêm mới Category');
+                    throw new Error('Lỗi tải ảnh lên');
                 }
-            } else {
-                throw new Error('Lỗi tải ảnh lên');
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setLoading(false);
             }
         };
         fetchAPI();

@@ -28,7 +28,8 @@ export const initState = {
         tourGuideId: '',
         tourGuideName: '', //
         tourGuidePhone: '', //
-        tourGuidePic: '', //
+        tourGuidePic:
+            'https://firebasestorage.googleapis.com/v0/b/project189-ede2a.appspot.com/o/profile.png?alt=media&token=fe709454-312a-4cf0-bb72-aa74037a700e', //
         categoryId: '', //
         status: 1,
     },

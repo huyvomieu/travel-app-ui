@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import styles from './ItemForm.module.scss';
-import { useState, useRef, useReducer, useEffect } from 'react';
+import { useState, useRef, useReducer, useEffect, useContext } from 'react';
 import Tippy from '@tippyjs/react/headless';
 import { useLoading } from '../../components/context/LoadingContext';
 
@@ -28,6 +28,8 @@ import { postPutItem, getDeleteItem } from '../../services/ItemService';
 import { getDeleteCategory } from '../../services/CategoryService';
 import { getCustomer } from '../../services/CustomerService';
 import { IoCloseOutline } from 'react-icons/io5';
+
+import { ContentScrollContext } from '../context/ContentScrollContext';
 const cx = classNames.bind(styles);
 
 function ItemForm({ type = 'add', id }) {
@@ -39,7 +41,7 @@ function ItemForm({ type = 'add', id }) {
     const guidedebounced = useDebounce(state.searchTourGuide, 500);
 
     const { setLoading } = useLoading();
-
+    const contentRef = useContext(ContentScrollContext);
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
@@ -90,24 +92,41 @@ function ItemForm({ type = 'add', id }) {
     function handleClickSave() {
         const fetchAPI = async () => {
             if (type === 'edit') {
-                const res = await postPutItem(state.data, 'PUT');
-                if (res.status === 200) {
-                    dispatch(setAlert({ active: true, content: 'Cập nhật Tour thành công!' }));
-                } else {
-                    dispatch(setAlert({ active: true, content: 'Cập nhật Tour thất bại!' }));
+                try {
+                    setLoading(true);
+                    const res = await postPutItem(state.data, 'PUT');
+                    if (res.status === 200) {
+                        dispatch(setAlert({ active: true, content: 'Cập nhật Tour thành công!' }));
+                    } else {
+                        dispatch(setAlert({ active: true, content: 'Cập nhật Tour thất bại!' }));
+                    }
+                } catch (error) {
+                    console.log(error);
+                } finally {
+                    setLoading(false);
+                    handleScrollTop();
                 }
             } else {
-                const result = await uploadImageRef.current?.getLinkImage();
-                if (result) {
-                    state.data.pic = result;
-                    const res = await postPutItem(state.data, 'POST');
-                    if (res.status === 201) {
-                        dispatch(setAlert({ active: true, content: 'Thêm mới Tour thành công!' }));
+                try {
+                    setLoading(true);
+                    const result = await uploadImageRef.current?.getLinkImage();
+                    if (result) {
+                        state.data.pic = result;
+                        const res = await postPutItem(state.data, 'POST');
+                        if (res.status === 201) {
+                            dispatch(setAlert({ active: true, content: 'Thêm mới Tour thành công!' }));
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        } else {
+                            throw new Error(res);
+                        }
                     } else {
-                        throw new Error(res);
+                        throw new Error('Lỗi tải ảnh lên');
                     }
-                } else {
-                    throw new Error('Lỗi tải ảnh lên');
+                } catch (error) {
+                    console.log(error);
+                } finally {
+                    setLoading(false);
+                    handleScrollTop();
                 }
             }
         };
@@ -137,6 +156,11 @@ function ItemForm({ type = 'add', id }) {
             }
         };
         fetchAPI();
+    }
+
+    function handleScrollTop() {
+        console.log(contentRef);
+        contentRef.current?.scrollTo({ top: 0, behavior: 'auto' });
     }
 
     return (
