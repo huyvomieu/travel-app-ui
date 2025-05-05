@@ -12,29 +12,25 @@ export const getReportSummary = async (d, m, y, params) => {
     }
 };
 
-export const getOrderById = async (id, params) => {
+export const getRevenueByMonth = async (y, m, params) => {
+    m = m.toString().padStart(2, '0');
     try {
-        const res = await httpRequest.get('order/' + id, {
-            params: { ...params },
+        const res = await httpRequest.get('report/revenue-by-month', {
+            params: { y, m, ...params },
         });
-        return res;
+        return res.data;
     } catch (error) {
         console.log(error);
-        return error;
     }
 };
 
-export const postPutorder = async (body, type) => {
+export const getBookingByMonth = async (y, params) => {
     try {
-        if (type.toUpperCase() === 'PUT') {
-            const res = await httpRequest.put('order?id=' + body.Id, body);
-            return res;
-        } else {
-            const res = await httpRequest.post('order', body);
-            return res;
-        }
+        const res = await httpRequest.get('report/booking-by-month', {
+            params: { y, ...params },
+        });
+        return res.data;
     } catch (error) {
         console.log(error);
-        return error;
     }
 };

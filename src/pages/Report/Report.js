@@ -6,10 +6,11 @@ import { CustomerChart } from '../../components/Charts/CustomerChart';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/Table/Table';
 import { useEffect, useState } from 'react';
 import { useLoading } from '../../components/context/LoadingContext';
-import { getReportSummary } from '../../services/ReportService';
+import { getBookingByMonth, getReportSummary, getRevenueByMonth } from '../../services/ReportService';
 export default function Report() {
     const [reports, setReports] = useState({});
-
+    const [revenueByMonth, setRevenueByMonth] = useState([]);
+    const [bookingByMonth, setBookingByMonth] = useState([]);
     const now = new Date();
 
     const { setLoading } = useLoading();
@@ -19,6 +20,8 @@ export default function Report() {
             try {
                 setLoading(true);
                 const res = await getReportSummary(now.getDate(), now.getMonth() + 1, now.getFullYear());
+                const revenuebymonth = await getRevenueByMonth(now.getFullYear(), now.getMonth() + 1);
+                setRevenueByMonth(revenuebymonth);
                 setReports(res);
             } catch (error) {
                 console.log(error);
@@ -28,7 +31,21 @@ export default function Report() {
         };
         fetchData();
     }, []);
-    console.log('re-render');
+
+    function handleClickBooking() {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                const res = await getBookingByMonth(now.getFullYear());
+                setBookingByMonth(res);
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }
 
     const { revenue, orders, average, customers } = reports?.data || {};
     return (
@@ -54,10 +71,15 @@ export default function Report() {
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-base font-medium">Trung bình tiền phòng</CardTitle>
+                        <CardTitle className="text-base font-medium">Trung bình / đơn hàng</CardTitle>
                     </CardHeader>
                     <CardContent>
-                        <div className="text-2xl font-bold">1.100.000VND</div>
+                        <div className="text-2xl font-bold">
+                            {(Number.parseFloat(revenue?.total) / Number.parseFloat(orders?.total)).toLocaleString(
+                                'vi-VN',
+                            )}
+                            VND
+                        </div>
                         <p className="text-xs text-muted-foreground">+5.1% so với tuần trước</p>
                     </CardContent>
                 </Card>
@@ -74,7 +96,9 @@ export default function Report() {
             <Tabs defaultValue="revenue" className="space-y-4">
                 <TabsList>
                     <TabsTrigger value="revenue">Doanh thu</TabsTrigger>
-                    <TabsTrigger value="bookings">Bookings</TabsTrigger>
+                    <TabsTrigger onClick={handleClickBooking} value="bookings">
+                        Bookings
+                    </TabsTrigger>
                     <TabsTrigger value="customers">Khách hàng</TabsTrigger>
                     <TabsTrigger value="tours">Tours</TabsTrigger>
                 </TabsList>
@@ -87,18 +111,18 @@ export default function Report() {
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="pl-2">
-                            <RevenueChart />
+                            <RevenueChart data={revenueByMonth} />
                         </CardContent>
                     </Card>
                 </TabsContent>
                 <TabsContent value="bookings" className="space-y-4">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Xu hướng đặt phòng</CardTitle>
+                            <CardTitle>Xu hướng đặt phòng theo tháng</CardTitle>
                             <CardDescription>Tổng quan số phòng đặt trong năm {now.getFullYear()}</CardDescription>
                         </CardHeader>
                         <CardContent className="pl-2">
-                            <BookingsChart />
+                            <BookingsChart data={bookingByMonth} />
                         </CardContent>
                     </Card>
                 </TabsContent>
