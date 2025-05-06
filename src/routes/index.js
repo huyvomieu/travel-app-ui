@@ -5,8 +5,9 @@ import Dashboard from '../pages/Dashboard';
 import OrderList from '../pages/Order/OrderList';
 import OrderDetail from '../pages/Order/OrderDetail';
 import Report from '../pages/Report';
+import Login from '../pages/Auth/Login';
 
-const publicRoutes = [
+const privateRoutes = [
     { path: '/', component: Dashboard },
     { path: '/order', component: OrderList },
     { path: '/order/:id', component: OrderDetail },
@@ -22,6 +23,6 @@ const publicRoutes = [
     { path: '/report', component: Report },
 ];
 
-const privateRoutes = [];
+const publicRoutes = [{ path: '/login', component: Login, layout: false }];
 
 export { publicRoutes, privateRoutes };
