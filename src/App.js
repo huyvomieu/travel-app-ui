@@ -5,6 +5,7 @@ import MainLayout from './layouts/MainLayout';
 import CustomLayout from './layouts/CustomLayout/CustomLayout';
 import { LoadingProvider, useLoading } from './components/context/LoadingContext';
 import Spinner from './components//ui/Spinner';
+import PrivateRoute from './components/PrivateRoute';
 
 function App() {
     const { loading } = useLoading();
@@ -25,9 +26,11 @@ function App() {
                                 key={key}
                                 path={route.path}
                                 element={
-                                    <Layout>
-                                        <Page />
-                                    </Layout>
+                                    <PrivateRoute>
+                                        <Layout>
+                                            <Page />
+                                        </Layout>
+                                    </PrivateRoute>
                                 }
                             />
                         );

@@ -11,10 +11,12 @@ import { FiUser } from 'react-icons/fi';
 import { MdOutlineTravelExplore } from 'react-icons/md';
 import { useNavigate } from 'react-router-dom';
 import MenuItem from './MenuItem';
+import { useAuth } from '../../../components/context/AuthContext';
 
 const cx = classNames.bind(styles);
 
 function Sidebar() {
+    const { logout } = useAuth();
     const navigate = useNavigate();
     return (
         <aside className={cx('wrapper', 'hide-on-print')}>
@@ -40,8 +42,8 @@ function Sidebar() {
                 <MenuItem to="/report" content="Báo cáo" icon={<IoTrendingDownOutline />} />
                 <MenuItem to="/settings" content="Cài đặt" icon={<IoSettingsOutline />} />
             </nav>
-            <div className={cx('bottom-menu')}>
-                <MenuItem to="/logout" content="Đăng xuất" icon={<IoLogOutOutline />} />
+            <div onClick={logout} className={cx('bottom-menu')}>
+                <MenuItem content="Đăng xuất" icon={<IoLogOutOutline />} />
             </div>
         </aside>
     );
