@@ -4,7 +4,7 @@ import styles from './CardList.module.scss';
 import { RiArrowDownSFill } from 'react-icons/ri';
 import { IoSearch } from 'react-icons/io5';
 import { useEffect, useState } from 'react';
-import Breadcrumbs from '../../Breadcrumbs/Breadcrumbs';
+import Button from '../../ui/Button';
 import { useNavigate } from 'react-router-dom';
 import { useLoading } from '../../../components/context/LoadingContext';
 
@@ -32,7 +32,11 @@ function CardList({ title, breadcrumbs, toBack, toCreate, callAPI, page }) {
     return (
         <div className={cx('wrapper')}>
             <div className={cx('inner')}>
-                <Breadcrumbs title={title} breadcrumbs={breadcrumbs} toBack={toBack} toCreate={toCreate} />
+                <div className={cx('actions')}>
+                    <Button to={toCreate} primary>
+                        Tạo tour
+                    </Button>
+                </div>
                 <div className={cx('main-layout')}>
                     <div className={cx('main-layout__inner')}>
                         <div className={cx('main-layout__header')}>

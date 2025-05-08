@@ -7,7 +7,6 @@ import { useLoading } from '../../components/context/LoadingContext';
 import CardItem from '../Card/CardItem';
 import BoxStatus from '../BoxStatus';
 import UploadImage from '../UploadImage';
-import CardFooter from '../Card/CardFooter';
 import Alert from '../Alert';
 import CardBox from '../Card/CardBox';
 
@@ -30,6 +29,8 @@ import { getCustomer } from '../../services/CustomerService';
 import { IoCloseOutline } from 'react-icons/io5';
 
 import { ContentScrollContext } from '../context/ContentScrollContext';
+import Button from '../ui/Button';
+import { useNavigate } from 'react-router-dom';
 const cx = classNames.bind(styles);
 
 function ItemForm({ type = 'add', id }) {
@@ -42,6 +43,8 @@ function ItemForm({ type = 'add', id }) {
 
     const { setLoading } = useLoading();
     const contentRef = useContext(ContentScrollContext);
+
+    const navigate = useNavigate();
     useEffect(() => {
         const fetchData = async () => {
             setLoading(true);
@@ -159,7 +162,6 @@ function ItemForm({ type = 'add', id }) {
     }
 
     function handleScrollTop() {
-        console.log(contentRef);
         contentRef.current?.scrollTo({ top: 0, behavior: 'auto' });
     }
 
@@ -324,7 +326,23 @@ function ItemForm({ type = 'add', id }) {
                     </CardBox>
                 </div>
                 <div style={{ marginBottom: '20px' }}></div>
-                <CardFooter type={type} onClickSave={handleClickSave} onClickConFirmDelete={handleConFirmDelete} />
+                <div className="flex justify-between items-center ">
+                    {type === 'edit' ? (
+                        <Button danger onClick={handleConFirmDelete}>
+                            Xóa
+                        </Button>
+                    ) : (
+                        <span></span>
+                    )}
+                    <div className="flex gap-8">
+                        <Button dark onClick={() => navigate('/items')}>
+                            Hủy
+                        </Button>
+                        <Button primary onClick={handleClickSave}>
+                            Lưu
+                        </Button>
+                    </div>
+                </div>
             </div>
         </div>
     );
