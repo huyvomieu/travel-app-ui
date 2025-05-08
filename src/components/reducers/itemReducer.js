@@ -21,9 +21,9 @@ export const initState = {
         duration: '',
         itemsId: null, //
         pic: '', //
-        price: null, //
+        price: '', //
         score: 4.5, //
-        timeTour: null,
+        timeTour: '',
         title: '', //
         tourGuideId: '',
         tourGuideName: '', //
@@ -163,8 +163,6 @@ function reducer(state, aciton) {
                 categoryName: category[0]?.Name,
             };
         case SET_ALERT:
-            console.log(aciton.payload);
-
             return {
                 ...state,
                 alert: aciton.payload.active,

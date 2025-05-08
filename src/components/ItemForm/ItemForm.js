@@ -31,10 +31,12 @@ import { IoCloseOutline } from 'react-icons/io5';
 import { ContentScrollContext } from '../context/ContentScrollContext';
 import Button from '../ui/Button';
 import { useNavigate } from 'react-router-dom';
+import Radio from '../ui/Radio/Radio';
 const cx = classNames.bind(styles);
 
 function ItemForm({ type = 'add', id }) {
     const [state, dispatch] = useReducer(reducer, initState);
+    const [isValid, setIsValid] = useState({ type: [], message: '' });
     const [tippy, setTippy] = useState(false);
     const [tippyTourGuide, setTippyTourGuide] = useState(false);
 
@@ -91,8 +93,31 @@ function ItemForm({ type = 'add', id }) {
     }, [id, type]);
 
     const uploadImageRef = useRef();
-
+    const inputShowRef = useRef();
+    const inputHideRef = useRef();
+    useEffect(() => {
+        const handleInputShowClick = (e) => {
+            dispatch(setData(1, 'status'));
+        };
+        const handleInputHideClick = (e) => {
+            dispatch(setData(0, 'status'));
+        };
+        inputShowRef.current.addEventListener('click', handleInputShowClick);
+        inputHideRef.current.addEventListener('click', handleInputHideClick);
+        return () => {
+            window.removeEventListener('click', handleInputShowClick);
+            window.removeEventListener('click', handleInputHideClick);
+        };
+    }, []);
     function handleClickSave() {
+        const keys = Object.keys(state.data).filter((key) => state.data[key] !== 'key' && state.data[key] === '');
+
+        if (keys.length > 2) {
+            setIsValid({ type: keys, message: '' });
+            handleScrollTop();
+            return;
+        }
+
         const fetchAPI = async () => {
             if (type === 'edit') {
                 try {
@@ -148,14 +173,21 @@ function ItemForm({ type = 'add', id }) {
     function handleConFirmDelete() {
         const fetchAPI = async () => {
             try {
+                setLoading(true);
                 const res = await getDeleteItem(state.data.key, 'DELETE');
                 if (res.status === 200) {
                     dispatch(setAlert({ active: true, content: 'Xóa Tour thành công!' }));
+                    handleScrollTop();
+                    setTimeout(() => {
+                        navigate('/items');
+                    }, 2000);
                 } else {
                     dispatch(setAlert({ active: true, content: 'Xóa Tour thất bại!, Có lỗi xảy ra!' }));
                 }
             } catch (error) {
                 dispatch(setAlert({ active: true, content: 'Xóa Tour thất bại!, Có lỗi xảy ra!', danger: true }));
+            } finally {
+                setLoading(false);
             }
         };
         fetchAPI();
@@ -179,6 +211,11 @@ function ItemForm({ type = 'add', id }) {
                                     dispatch(setData(value, 'title'));
                                 }}
                             />
+                            {isValid.type.includes('title') && (
+                                <span className=" text-sm font-normal text-red-400">
+                                    Không được bỏ trống trường này
+                                </span>
+                            )}
                             <CardItem
                                 label={'Địa chỉ'}
                                 state={state.data.address}
@@ -186,6 +223,11 @@ function ItemForm({ type = 'add', id }) {
                                     dispatch(setData(value, 'address'));
                                 }}
                             />
+                            {isValid.type.includes('address') && (
+                                <span className=" text-sm font-normal text-red-400">
+                                    Không được bỏ trống trường này
+                                </span>
+                            )}
                             <CardItem
                                 control="textarea"
                                 label={'Mô tả'}
@@ -195,6 +237,11 @@ function ItemForm({ type = 'add', id }) {
                                     dispatch(setData(value, 'description'));
                                 }}
                             />
+                            {isValid.type.includes('description') && (
+                                <span className=" text-sm font-normal text-red-400">
+                                    Không được bỏ trống trường này
+                                </span>
+                            )}
                             <div className={cx('row')}>
                                 <CardItem
                                     type="date"
@@ -204,6 +251,7 @@ function ItemForm({ type = 'add', id }) {
                                         dispatch(setData(value, 'dateTour'));
                                     }}
                                 />
+
                                 <CardItem
                                     type="time"
                                     step="3600"
@@ -214,6 +262,7 @@ function ItemForm({ type = 'add', id }) {
                                         dispatch(setData(value, 'timeTour'));
                                     }}
                                 />
+
                                 <CardItem
                                     type="number"
                                     min="0"
@@ -222,9 +271,10 @@ function ItemForm({ type = 'add', id }) {
                                     label={'Số giường'}
                                     state={state.data.bed}
                                     setState={(value) => {
-                                        dispatch(setData(value, 'bed'));
+                                        dispatch(setData(Number.parseInt(value), 'bed'));
                                     }}
                                 />
+
                                 <CardItem
                                     classNames={cx('col')}
                                     label={'Thời gian'}
@@ -234,10 +284,28 @@ function ItemForm({ type = 'add', id }) {
                                     }}
                                 />
                             </div>
+                            <div className={cx('row')}>
+                                {isValid.type.includes('dateTour') && (
+                                    <span className=" text-sm font-normal text-red-400">Không được bỏ trống!</span>
+                                )}
+                                {isValid.type.includes('bed') && (
+                                    <span className=" text-sm font-normal text-red-400">Không được bỏ trống!</span>
+                                )}
+                                {isValid.type.includes('timeTour') && (
+                                    <span className=" text-sm font-normal text-red-400">Không được bỏ trống!</span>
+                                )}
+                                {isValid.type.includes('duration') && (
+                                    <span className=" text-sm font-normal text-red-400">Không được bỏ trống!</span>
+                                )}
+                            </div>
                         </div>
                     </div>
                     <div className={cx('next-card')}>
-                        <BoxStatus classNames={cx('status-card')} />
+                        <div className="">
+                            <div>Trạng thái</div>
+                            <Radio ref={inputShowRef}>Hiển thị</Radio>
+                            <Radio ref={inputHideRef}>Ẩn</Radio>
+                        </div>
 
                         <CardBox label="Danh mục">
                             <Tippy
@@ -284,9 +352,12 @@ function ItemForm({ type = 'add', id }) {
                             label={'Giá'}
                             state={state.data.price}
                             setState={(value) => {
-                                dispatch(setData(value, 'price'));
+                                dispatch(setData(Number.parseInt(value), 'price'));
                             }}
                         />
+                        {isValid.type.includes('price') && (
+                            <span className=" text-sm font-normal text-red-400">Không được bỏ trống trường này</span>
+                        )}
                     </CardBox>
                     <CardBox label="Người hướng dẫn tour">
                         <Tippy
