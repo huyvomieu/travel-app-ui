@@ -1,7 +1,7 @@
 import ItemForm from '../../../components/ItemForm';
 
 function CreateItem() {
-    return <ItemForm />;
+    return <ItemForm type="add" />;
 }
 
 export default CreateItem;
