@@ -5,7 +5,6 @@ import Tippy from '@tippyjs/react/headless';
 import { useLoading } from '../../components/context/LoadingContext';
 
 import CardItem from '../Card/CardItem';
-import BoxStatus from '../BoxStatus';
 import UploadImage from '../UploadImage';
 import Alert from '../Alert';
 import CardBox from '../Card/CardBox';
@@ -301,7 +300,7 @@ function ItemForm({ type = 'add', id }) {
                         </div>
                     </div>
                     <div className={cx('next-card')}>
-                        <div className="">
+                        <div className="p-4 bg-white">
                             <div>Trạng thái</div>
                             <Radio ref={inputShowRef}>Hiển thị</Radio>
                             <Radio ref={inputHideRef}>Ẩn</Radio>

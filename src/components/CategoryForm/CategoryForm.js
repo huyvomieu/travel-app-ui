@@ -2,13 +2,15 @@ import classNames from 'classnames/bind';
 import styles from './CategoryForm.module.scss';
 import { useState, useRef, useReducer, useEffect } from 'react';
 import CardItem from '../Card/CardItem/CardItem';
-import BoxStatus from '../BoxStatus';
 import UploadImage from '../UploadImage';
-import CardFooter from '../Card/CardFooter';
 import reducer, { initState, setData, getData } from '../reducers/categoryReducer';
 import { postPutCategory, getDeleteCategory } from '../../services/CategoryService';
 import Alert from '../Alert';
 import { useLoading } from '../context/LoadingContext';
+import Radio from '../ui/Radio/Radio';
+import { useNavigate } from 'react-router-dom';
+import Button from '../ui/Button';
+
 const cx = classNames.bind(styles);
 
 function CategoryForm({ type = 'add', id }) {
@@ -33,7 +35,10 @@ function CategoryForm({ type = 'add', id }) {
         }
     }, [id, type]);
     const uploadImageRef = useRef();
+    const inputShowRef = useRef();
+    const inputHideRef = useRef();
 
+    const navigate = useNavigate();
     function handleClickSave() {
         const fetchAPI = async () => {
             try {
@@ -84,12 +89,32 @@ function CategoryForm({ type = 'add', id }) {
                         </div>
                     </div>
                     <div className={cx('next-card')}>
-                        <BoxStatus classNames={cx('status-card')} />
+                        <div className="p-4 bg-white">
+                            <div>Trạng thái</div>
+                            <Radio ref={inputShowRef}>Hiển thị</Radio>
+                            <Radio ref={inputHideRef}>Ẩn</Radio>
+                        </div>
 
                         <UploadImage src={state.ImagePath} ref={uploadImageRef} className={cx('avatar-card')} />
                     </div>
                 </div>
-                <CardFooter type={type} onClickSave={handleClickSave} />
+                <div className="flex justify-between items-center ">
+                    {type === 'edit' ? (
+                        <Button danger onClick={() => {}}>
+                            Xóa
+                        </Button>
+                    ) : (
+                        <span></span>
+                    )}
+                    <div className="flex gap-8">
+                        <Button dark onClick={() => navigate('/category')}>
+                            Hủy
+                        </Button>
+                        <Button primary onClick={handleClickSave}>
+                            Lưu
+                        </Button>
+                    </div>
+                </div>
             </div>
         </div>
     );
