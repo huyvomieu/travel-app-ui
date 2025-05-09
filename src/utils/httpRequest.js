@@ -1,12 +1,19 @@
 import axios from 'axios';
-const token = localStorage.getItem('token');
 
 const httpRequest = axios.create({
     baseURL: process.env.REACT_APP_BASE_URL_API,
-    headers: {
-        Authorization: `Bearer ${token}`,
-    },
 });
+
+// set token mỗi khi gửi request
+httpRequest.interceptors.request.use(
+    (config) => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            config.headers.Authorization = `Bearer ${token}`;
+        }
+    },
+    (error) => Promise.reject(error),
+);
 
 export const get = async (path, options) => {
     const res = await httpRequest.get(path, options);
