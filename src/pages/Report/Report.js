@@ -73,7 +73,10 @@ export default function Report() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{revenue?.total.toLocaleString('vi-VN')}VND</div>
-                        <p className="text-xs text-muted-foreground">+{revenue?.psLastWeek}% so với tuần trước</p>
+                        <p className="text-xs text-muted-foreground">
+                            {revenue?.psLastWeek > 0 ? '+' : ''}
+                            {revenue?.psLastWeek}% so với tuần trước
+                        </p>
                     </CardContent>
                 </Card>
                 <Card>
@@ -82,7 +85,10 @@ export default function Report() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{orders?.total}</div>
-                        <p className="text-xs text-muted-foreground">+{orders?.psLastWeek}% so với tuần trước</p>
+                        <p className="text-xs text-muted-foreground">
+                            {orders?.psLastWeek > 0 ? '+' : ''}
+                            {orders?.psLastWeek}% so với tuần trước
+                        </p>
                     </CardContent>
                 </Card>
                 <Card>
@@ -105,7 +111,10 @@ export default function Report() {
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">{customers?.total}</div>
-                        <p className="text-xs text-muted-foreground">+{customers?.psLastWeek}% so với tuần trước</p>
+                        <p className="text-xs text-muted-foreground">
+                            {customers?.psLastWeek > 0 ? '+' : ''}
+                            {customers?.psLastWeek}% so với tuần trước
+                        </p>
                     </CardContent>
                 </Card>
             </div>
@@ -125,7 +134,7 @@ export default function Report() {
                         <CardHeader>
                             <CardTitle>Tổng quan doanh thu</CardTitle>
                             <CardDescription>
-                                Doanh thu tháng {now.getMonth()} năm {now.getFullYear()}
+                                Doanh thu tháng {now.getMonth() + 1} năm {now.getFullYear()}
                             </CardDescription>
                         </CardHeader>
                         <CardContent className="pl-2">
@@ -160,7 +169,7 @@ export default function Report() {
                         <CardHeader>
                             <CardTitle>Tours Phổ Biến </CardTitle>
                             <CardDescription>
-                                Các Tour phổ biến nhất trong tháng {now.getMonth()} năm {now.getFullYear()}
+                                Các Tour phổ biến nhất trong tháng {now.getMonth() + 1} năm {now.getFullYear()}
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
