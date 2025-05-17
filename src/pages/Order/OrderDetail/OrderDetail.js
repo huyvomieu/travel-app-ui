@@ -133,11 +133,9 @@ function OrderDetail() {
                             <div className={cx('tour-detail__right')}>
                                 <div className={cx('tour-time')}>
                                     <CiCalendarDate />
-                                    <span>
-                                        {order.tourInfo?.dateTour} - {order.tourInfo?.duration}
-                                    </span>
+                                    <span>{order.tourInfo?.dateTour}</span>
                                 </div>
-                                <span className={cx('tour-duration')}>{order.tourInfo?.bed} days</span>
+                                <span className={cx('tour-duration')}>{order.tourInfo?.duration}</span>
                             </div>
                         </div>
                     </div>
@@ -149,7 +147,7 @@ function OrderDetail() {
                             <thead className={cx('bgc-nau')}>
                                 <tr className={cx('row')}>
                                     <th>Mô tả</th>
-                                    <th>Số gường</th>
+                                    <th>Số người</th>
                                     <th className={cx('text-right')}>Giá</th>
                                     <th className={cx('text-right')}>Tổng tiền</th>
                                 </tr>
@@ -161,8 +159,8 @@ function OrderDetail() {
                                         <div>{order.tourInfo?.duration} days</div>
                                     </td>
                                     <td>{order.tourInfo?.bed}</td>
-                                    <td align="right">{order.total} VND</td>
-                                    <td align="right">{order.total * order.tourInfo?.bed}.000 VND</td>
+                                    <td align="right">{order.tourInfo?.price.toLocaleString('Vi-vi')} VND</td>
+                                    <td align="right">{order.total?.toLocaleString('Vi-vi')} VND</td>
                                 </tr>
                             </tbody>
                             <tfoot className={cx('bgc-nau')}>
@@ -176,7 +174,7 @@ function OrderDetail() {
                                     <td colSpan="3" align="right">
                                         Tổng cộng
                                     </td>
-                                    <td align="right">{order.total * order.tourInfo?.bed}.000 VND</td>
+                                    <td align="right">{order.total?.toLocaleString('Vi-vi')} VND</td>
                                 </tr>
                             </tfoot>
                         </table>
