@@ -34,3 +34,14 @@ export const getBookingByMonth = async (y, params) => {
         console.log(error);
     }
 };
+
+export const getTopTours = async (params) => {
+    try {
+        const res = await httpRequest.get('report/top-tours', {
+            params: { ...params },
+        });
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};

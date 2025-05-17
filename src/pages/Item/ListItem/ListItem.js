@@ -18,8 +18,15 @@ import { Select, SelectValue, SelectTrigger, SelectContent, SelectItem } from '.
 
 function Item() {
     const [tours, setTours] = useState([]);
+    const [checkedItems, setCheckedItems] = useState({});
+
+    const allChecked = Object.values(checkedItems).every(Boolean);
+    const someChecked = Object.values(checkedItems).some(Boolean);
+
     const { setLoading } = useLoading();
     const navigate = useNavigate();
+
+    // Call API khi mount
     useEffect(() => {
         const fetchAPI = async () => {
             setLoading(true);
@@ -34,6 +41,39 @@ function Item() {
         };
         fetchAPI();
     }, []);
+
+    // Khi tours thay đổi, cập nhật checkedItems
+    useEffect(() => {
+        const newChecked = {};
+        tours.forEach((tour) => {
+            newChecked[tour.key] = false;
+        });
+        setCheckedItems(newChecked);
+    }, [tours]);
+    const handleClickRow = (e, data) => {
+        if (e.target.type === 'checkbox') {
+            // e.preventDefault();
+        } else {
+            navigate(`/items/${data.key}`);
+        }
+    };
+
+    const handleCheckAll = (e) => {
+        const checked = e.target.checked;
+        const newCheckedItem = {};
+        tours.forEach((item) => {
+            newCheckedItem[item.key] = checked;
+        });
+        setCheckedItems(newCheckedItem);
+    };
+
+    const handleItemChange = (e) => {
+        const { name, checked } = e.target;
+        setCheckedItems((prev) => ({
+            ...prev,
+            [name]: checked,
+        }));
+    };
     return (
         <div className="mt-8 mr-8">
             <div className="">
@@ -75,22 +115,46 @@ function Item() {
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead>
-                                            <input type="checkbox" />
+                                            <input type="checkbox" onChange={handleCheckAll} checked={allChecked} />
                                         </TableHead>
-                                        <TableHead>Ảnh</TableHead>
-                                        <TableHead>Tên Tour</TableHead>
-                                        <TableHead>Thời gian</TableHead>
-                                        <TableHead>Giá</TableHead>
-                                        <TableHead>Giường</TableHead>
-                                        <TableHead>Trạng thái</TableHead>
+                                        {someChecked ? (
+                                            <>
+                                                <TableHead></TableHead>
+                                                <TableHead>
+                                                    <Button className="p-2 border border-solid border-[#e5e5e5]">
+                                                        Sửa tour
+                                                    </Button>
+                                                    <Button className="p-2 border border-solid border-[#e5e5e5]">
+                                                        Xóa tour
+                                                    </Button>
+                                                </TableHead>
+                                                <TableHead></TableHead>
+                                                <TableHead></TableHead>
+                                                <TableHead></TableHead>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <TableHead>Ảnh</TableHead>
+                                                <TableHead>Tên Tour</TableHead>
+                                                <TableHead>Thời gian</TableHead>
+                                                <TableHead>Giá</TableHead>
+                                                <TableHead>Giường</TableHead>
+                                                <TableHead>Trạng thái</TableHead>
+                                            </>
+                                        )}
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
                                     {tours.map((data) => {
                                         return (
-                                            <TableRow onClick={() => navigate(`/items/${data.key}`)} key={data.key}>
+                                            <TableRow key={data.key} onClick={(e) => handleClickRow(e, data)}>
                                                 <TableCell>
-                                                    <input type="checkbox" />
+                                                    <input
+                                                        type="checkbox"
+                                                        name={data.key}
+                                                        onChange={handleItemChange}
+                                                        checked={checkedItems[data.key]}
+                                                    />
                                                 </TableCell>
                                                 <TableCell>
                                                     <img
@@ -110,15 +174,22 @@ function Item() {
                                                             'bg-red-400': !data.status,
                                                         })}
                                                     >
-                                                        {data.status && 'Hiển thị'}
-                                                        {!data.status && 'Không hiển thị'}
+                                                        {data.status === 1 && 'Hiển thị'}
+                                                        {data.status === 0 && 'Không hiển thị'}
                                                     </span>
                                                 </TableCell>
                                             </TableRow>
                                         );
                                     })}
                                 </TableBody>
-                                <TableFooter></TableFooter>
+                                <TableFooter>
+                                    <TableRow>
+                                        <TableCell colSpan="7" className="flex w-full justify-center">
+                                            <Button>Trước</Button>
+                                            <Button>Sau</Button>
+                                        </TableCell>
+                                    </TableRow>
+                                </TableFooter>
                             </Table>
                         </div>
                     </div>

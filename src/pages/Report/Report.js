@@ -6,11 +6,13 @@ import { CustomerChart } from '../../components/Charts/CustomerChart';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../components/ui/Table/Table';
 import { useEffect, useState } from 'react';
 import { useLoading } from '../../components/context/LoadingContext';
-import { getBookingByMonth, getReportSummary, getRevenueByMonth } from '../../services/ReportService';
+import { getBookingByMonth, getReportSummary, getRevenueByMonth, getTopTours } from '../../services/ReportService';
 export default function Report() {
     const [reports, setReports] = useState({});
     const [revenueByMonth, setRevenueByMonth] = useState([]);
     const [bookingByMonth, setBookingByMonth] = useState([]);
+    const [popularTours, setPopularTours] = useState([]);
+
     const now = new Date();
 
     const { setLoading } = useLoading();
@@ -38,6 +40,20 @@ export default function Report() {
                 setLoading(true);
                 const res = await getBookingByMonth(now.getFullYear());
                 setBookingByMonth(res);
+            } catch (error) {
+                console.log(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchData();
+    }
+    function handlePopularTours() {
+        const fetchData = async () => {
+            try {
+                setLoading(true);
+                const res = await getTopTours();
+                setPopularTours(res);
             } catch (error) {
                 console.log(error);
             } finally {
@@ -100,7 +116,9 @@ export default function Report() {
                         Bookings
                     </TabsTrigger>
                     <TabsTrigger value="customers">Khách hàng</TabsTrigger>
-                    <TabsTrigger value="tours">Tours</TabsTrigger>
+                    <TabsTrigger value="tours" onClick={handlePopularTours}>
+                        Tours
+                    </TabsTrigger>
                 </TabsList>
                 <TabsContent value="revenue" className="space-y-4">
                     <Card>
@@ -157,10 +175,17 @@ export default function Report() {
                                 </TableHeader>
                                 <TableBody>
                                     {popularTours.map((tour) => (
-                                        <TableRow key={tour.id}>
-                                            <TableCell className="font-medium">{tour.name}</TableCell>
-                                            <TableCell>{tour.bookings}</TableCell>
-                                            <TableCell>${tour.revenue}</TableCell>
+                                        <TableRow key={tour.itemId}>
+                                            <TableCell className="font-medium">{tour?.itemInfo?.title}</TableCell>
+                                            <TableCell>{tour.count}</TableCell>
+                                            <TableCell>
+                                                {(
+                                                    tour.count *
+                                                    tour?.itemInfo?.bed *
+                                                    tour?.itemInfo?.price
+                                                ).toLocaleString('Vi-vi')}
+                                                VND
+                                            </TableCell>
                                             <TableCell>{tour.rating}/5</TableCell>
                                         </TableRow>
                                     ))}
@@ -173,41 +198,3 @@ export default function Report() {
         </div>
     );
 }
-
-const popularTours = [
-    {
-        id: '1',
-        name: 'Mountain Explorer Tour',
-        bookings: 245,
-        revenue: '318,255.00',
-        rating: 4.8,
-    },
-    {
-        id: '2',
-        name: 'Coastal Adventure',
-        bookings: 189,
-        revenue: '169,911.00',
-        rating: 4.7,
-    },
-    {
-        id: '3',
-        name: 'Wildlife Safari',
-        bookings: 156,
-        revenue: '233,844.00',
-        rating: 4.9,
-    },
-    {
-        id: '4',
-        name: 'Historical City Tour',
-        bookings: 132,
-        revenue: '79,068.00',
-        rating: 4.6,
-    },
-    {
-        id: '5',
-        name: 'Island Hopping Adventure',
-        bookings: 98,
-        revenue: '215,502.00',
-        rating: 4.8,
-    },
-];
