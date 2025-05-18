@@ -12,6 +12,18 @@ export const getReportSummary = async (d, m, y, params) => {
     }
 };
 
+export const getReportDashboard = async (params) => {
+    try {
+        const res = await httpRequest.get('report/dashboard', {
+            params: { ...params },
+        });
+        return res.data;
+    } catch (error) {
+        console.log(error);
+        return [];
+    }
+};
+
 export const getRevenueByMonth = async (y, m, params) => {
     m = m.toString().padStart(2, '0');
     try {
