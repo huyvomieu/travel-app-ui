@@ -6,6 +6,6 @@ export const postLogin = async (body) => {
         return res;
     } catch (error) {
         console.log(error);
-        return [];
+        return error;
     }
 };
