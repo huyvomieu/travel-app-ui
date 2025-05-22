@@ -78,6 +78,8 @@ function Login() {
                     navigate('/');
                 } else {
                     // Xử lý khi sai pass hoặc email
+                    setIsInValidPassword(true);
+                    setErrorMsgPassword(res.response.data.message);
                 }
             } catch (error) {
                 console.log(error);
