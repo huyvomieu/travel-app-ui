@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import Button from '../../components/ui/Button';
 import { postLogin } from '../../services/AuthService';
 import { useLoading } from '../../components/context/LoadingContext';
@@ -7,13 +7,17 @@ import { useAuth } from '../../components/context/AuthContext';
 function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [isValid, setIsvalid] = useState(true);
-    const [isEmpty, setIsEmpty] = useState(false);
-    const [error, setError] = useState('Vui lòng nhập Email và mật khẩu!');
+    const [isInValid, setIsInvalid] = useState(false);
+    const [isInValidPassword, setIsInValidPassword] = useState(false);
+    const [errorMsgEmail, setErrorMsgEmail] = useState('');
+    const [errorMsgPassword, setErrorMsgPassword] = useState('');
 
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     const { setLoading } = useLoading();
+
+    const inputEmailRef = useRef();
+    const inputPasswordRef = useRef();
 
     const { login } = useAuth();
     const navigate = useNavigate();
@@ -21,20 +25,48 @@ function Login() {
         const value = e.target.value;
         setEmail(value);
         if (value === '') {
-            setIsvalid(true);
+            setIsInvalid(false);
+            setErrorMsgEmail('');
             return;
         }
-        setIsvalid(emailRegex.test(value));
+        const isValid = emailRegex.test(value);
+        if (isValid) {
+            setIsInvalid(false);
+            setErrorMsgEmail('');
+        } else {
+            setIsInvalid(true);
+            setErrorMsgEmail('Email không hợp lệ');
+        }
+    };
+    const handleChangePassword = (e) => {
+        if (e.target.value) {
+            setIsInValidPassword(false);
+            setErrorMsgPassword('');
+        }
+        setPassword(e.target.value);
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (email === '' || password === '') {
-            setIsEmpty(true);
-            return;
+        var isCheckValid = true;
+        if (email === '') {
+            setIsInvalid(true);
+            setErrorMsgEmail('Vui lòng nhập email!');
+            inputEmailRef.current.focus();
+            isCheckValid = false;
         }
+        if (password === '') {
+            setIsInValidPassword(true);
+            setErrorMsgPassword('Vui lòng nhập mật khẩu!');
+            if (isCheckValid) inputPasswordRef.current.focus();
+            isCheckValid = false;
+        }
+        if (!isCheckValid) return;
+
         if (!emailRegex.test(email)) {
-            setIsvalid(false);
+            setIsInvalid(true);
+            setErrorMsgEmail('Email không hợp lệ');
+            return;
         }
 
         const fetchAPI = async () => {
@@ -44,6 +76,8 @@ function Login() {
                 if (res.status === 200) {
                     login(res.data.token);
                     navigate('/');
+                } else {
+                    // Xử lý khi sai pass hoặc email
                 }
             } catch (error) {
                 console.log(error);
@@ -59,11 +93,9 @@ function Login() {
                 <form onSubmit={handleSubmit}>
                     <div className="p-8">
                         <div className="pb-8">
-                            <div className="pb-4 tracking-tight font-bold font text-5xl text-center">
-                                Phần mềm quản lý Tour
-                            </div>
+                            <div className="pb-4 tracking-tight font-bold font text-5xl text-center"></div>
                             <div className="text-sm text-muted-foreground">
-                                Được xây dựng bởi
+                                <span>Được xây dựng bởi </span>
                                 <a
                                     href="https://www.facebook.com/huydz24"
                                     className="text-sm text-blue-600 hover:underline"
@@ -73,23 +105,24 @@ function Login() {
                             </div>
                         </div>
                         <div className="pb-4">
-                            <div className="pb-4 space-y-2">
+                            <div className="pb-4 mb-2">
                                 <label className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                                     Email
                                 </label>
                                 <input
+                                    ref={inputEmailRef}
                                     className="flex h-16 w-full rounded-md border border-input bg-background px-3 py-2 mt-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
                                     type="email"
                                     placeholder="your@gmail.com"
                                     value={email}
                                     onChange={handleChangeEmail}
-                                    onBlur={() => setIsvalid(true)}
+                                    onBlur={() => setIsInvalid(false)}
                                 />
                                 <p
-                                    className="text-sm text-red-500"
-                                    style={{ visibility: isValid ? 'hidden' : 'visible' }}
+                                    className="h-2 py-4 text-sm text-red-500"
+                                    style={{ visibility: isInValid ? 'visible' : 'hidden' }}
                                 >
-                                    Email không đúng định dạng
+                                    {errorMsgEmail}
                                 </p>
                             </div>
                             <div>
@@ -102,21 +135,22 @@ function Login() {
                                     </a>
                                 </div>
                                 <input
+                                    ref={inputPasswordRef}
                                     className="flex h-16 w-full rounded-md border border-input bg-background px-3 py-2 mt-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"
                                     type="password"
                                     value={password}
-                                    onChange={(e) => setPassword(e.target.value)}
+                                    onChange={handleChangePassword}
                                 />
                                 <p
-                                    className="text-sm text-red-500 mt-1"
-                                    style={{ visibility: isEmpty ? 'visible' : 'hidden' }}
+                                    className="h-2  text-sm text-red-500 mt-1"
+                                    style={{ visibility: isInValidPassword ? 'visible' : 'hidden' }}
                                 >
-                                    {error}
+                                    {errorMsgPassword}
                                 </p>
                             </div>
                         </div>
                         <div className="flex items-center ">
-                            <Button type="submit" dark classNames="w-full">
+                            <Button type="submit" dark classNames="w-full mt-4">
                                 Đăng nhập
                             </Button>
                         </div>
