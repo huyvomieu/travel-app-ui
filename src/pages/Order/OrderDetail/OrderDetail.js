@@ -54,18 +54,18 @@ function OrderDetail() {
                     <div className={cx('header__left')}>
                         <IoIosArrowRoundBack className={cx('icon')} onClick={() => navigate('/order')} />
                         <h2 className={cx('order-name')}>
-                            Order
+                            Đơn hàng
                             <span className="text-primary"> {order?.orderId ?? ''}</span>
                         </h2>
                     </div>
                     <div className={cx('header__right')}>
                         <Button dark onClick={handlePrint}>
                             <IoIosPrint className={cx('icon')} />
-                            <span>Print Invoice</span>
+                            <span>In hoá đơn</span>
                         </Button>
                         <Button outline>
                             <RxDownload className={cx('icon')} />
-                            <span>Download PDF</span>
+                            <span>Tải về PDF</span>
                         </Button>
                     </div>
                 </div>
@@ -74,7 +74,7 @@ function OrderDetail() {
                         <h3 className={cx('item_title')}>Thông tin đơn hàng</h3>
                         <div className={cx('info__content')}>
                             <div className={cx('row')}>
-                                <div className={cx('col-l')}>Order ID:</div>
+                                <div className={cx('col-l')}>Mã đơn hàng:</div>
                                 <div className={cx('col-r')}>{order.orderId}</div>
                             </div>
                             <div className={cx('row')}>
@@ -103,9 +103,7 @@ function OrderDetail() {
                         <h3 className={cx('item_title')}>Thông tin khách hàng</h3>
                         <div className={cx('info__content')}>
                             <div className={cx('row', 'user')}>
-                                <div className={cx('col-l')}>
-                                    <CiUser />
-                                </div>
+                                <div className={cx('col-l')}>Tên đăng nhập:</div>
                                 <div className={cx('col-r')}>{order.userInfo?.name}</div>
                             </div>
                             <div className={cx('row')}>
@@ -113,7 +111,7 @@ function OrderDetail() {
                                 <div className={cx('col-r')}>{order.userInfo?.email}</div>
                             </div>
                             <div className={cx('row')}>
-                                <div className={cx('col-l')}>Phone:</div>
+                                <div className={cx('col-l')}>Số điện thoại:</div>
                                 <div className={cx('col-r')}>+84 364356053</div>
                             </div>
                         </div>
@@ -181,9 +179,9 @@ function OrderDetail() {
                     </div>
                 </div>
                 <div className={cx('note')}>
-                    <h3 className={cx('item_title')}>Notes</h3>
+                    <h3 className={cx('item_title')}>Ghi chú</h3>
                     <div className={cx('note-box', 'bgc-nau')}>
-                        <span>{order.notes ?? 'Không có ghi chú!'}</span>
+                        <span>{order.notes ?? 'Trống!'}</span>
                     </div>
                 </div>
                 <div className={cx('info_payment')}>

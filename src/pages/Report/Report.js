@@ -145,8 +145,8 @@ export default function Report() {
                 <TabsContent value="bookings" className="space-y-4">
                     <Card>
                         <CardHeader>
-                            <CardTitle>Xu hướng đặt phòng theo tháng</CardTitle>
-                            <CardDescription>Tổng quan số phòng đặt trong năm {now.getFullYear()}</CardDescription>
+                            <CardTitle>Số Tour đặt theo tháng</CardTitle>
+                            <CardDescription>Tổng quan số Tour đặt trong năm {now.getFullYear()}</CardDescription>
                         </CardHeader>
                         <CardContent className="pl-2">
                             <BookingsChart data={bookingByMonth} />

@@ -63,10 +63,10 @@ function Dashboard() {
             </div>
             <Tabs defaultValue="overview" className="space-y-4">
                 <TabsList>
-                    <TabsTrigger value="overview">Overview</TabsTrigger>
-                    <TabsTrigger value="analytics">Analytics</TabsTrigger>
-                    <TabsTrigger value="reports">Reports</TabsTrigger>
-                    <TabsTrigger value="notification">Notification</TabsTrigger>
+                    <TabsTrigger value="overview">Tổng quan</TabsTrigger>
+                    <TabsTrigger value="analytics">Phân tích</TabsTrigger>
+                    <TabsTrigger value="reports">Báo cáo</TabsTrigger>
+                    <TabsTrigger value="notification">Thông báo </TabsTrigger>
                 </TabsList>
                 <TabsContent value="overview" className="space-y-4">
                     <Card>

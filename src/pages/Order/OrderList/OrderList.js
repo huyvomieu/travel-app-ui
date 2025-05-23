@@ -52,20 +52,20 @@ function OrderList() {
     return (
         <div className={cx('wrapper')}>
             <div className={cx('header')}>
-                <Input placeholder="Search orders..." />
+                <Input placeholder="Tìm kiếm đơn hàng..." />
                 <Button outline classNames={cx('icon-filter')}>
                     <CiFilter className={cx('icon')} />
                 </Button>
                 <Button onClick={handleExport} dark classNames={cx('icon-export')}>
                     <RxDownload className={cx('icon')} />
-                    <span>Export</span>
+                    <span>Xuất</span>
                 </Button>
             </div>
             <div className={cx('main-box')}>
                 <div className={cx('inner-box')}>
                     <div className={cx('title-box')}>
                         <div className={cx('title')}>
-                            <div>Order</div>
+                            <div>Đơn hàng</div>
                         </div>
                         <div className={cx('sub-title')}>
                             <span>Xem và quản lý tất cả Tour và Đơn hàng.</span>
