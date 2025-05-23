@@ -196,6 +196,33 @@ function ItemForm({ type = 'add', id }) {
         contentRef.current?.scrollTo({ top: 0, behavior: 'auto' });
     }
 
+    // handle change -- validate data
+    function handleChangeTitle(value) {
+        if (value.length > 100) return;
+        dispatch(setData(value, 'title'));
+    }
+    function handleChangeAddress(value) {
+        if (value.length > 100) return;
+        dispatch(setData(value, 'address'));
+    }
+    function handleChangeDesc(value) {
+        if (value.length > 1000) return;
+        dispatch(setData(value, 'description'));
+    }
+    function handleChangePrice(value) {
+        if (!value) {
+            dispatch(setData(null, 'price'));
+        }
+        if (!Number(value)) {
+            return;
+        }
+        dispatch(setData(Number.parseInt(value), 'price'));
+    }
+
+    function handleChangeBed(value) {
+        if (value > 100) return;
+        dispatch(setData(value, 'bed'));
+    }
     return (
         <div className={cx('wrapper')}>
             {state.alert && <Alert content={state.alertContent} success />}
@@ -203,25 +230,13 @@ function ItemForm({ type = 'add', id }) {
                 <div className={cx('main-layout')}>
                     <div className={cx('main-card')}>
                         <div className={cx('inner')}>
-                            <CardItem
-                                label={'Tên tour'}
-                                state={state.data.title}
-                                setState={(value) => {
-                                    dispatch(setData(value, 'title'));
-                                }}
-                            />
+                            <CardItem label={'Tên tour'} state={state.data.title} setState={handleChangeTitle} />
                             {isValid.type.includes('title') && (
                                 <span className=" text-sm font-normal text-red-400">
                                     Không được bỏ trống trường này
                                 </span>
                             )}
-                            <CardItem
-                                label={'Địa chỉ'}
-                                state={state.data.address}
-                                setState={(value) => {
-                                    dispatch(setData(value, 'address'));
-                                }}
-                            />
+                            <CardItem label={'Địa chỉ'} state={state.data.address} setState={handleChangeAddress} />
                             {isValid.type.includes('address') && (
                                 <span className=" text-sm font-normal text-red-400">
                                     Không được bỏ trống trường này
@@ -229,12 +244,10 @@ function ItemForm({ type = 'add', id }) {
                             )}
                             <CardItem
                                 control="textarea"
-                                label={'Mô tả'}
+                                label="Mô tả"
                                 rows="10"
                                 state={state.data.description}
-                                setState={(value) => {
-                                    dispatch(setData(value, 'description'));
-                                }}
+                                setState={handleChangeDesc}
                             />
                             {isValid.type.includes('description') && (
                                 <span className=" text-sm font-normal text-red-400">
@@ -269,9 +282,7 @@ function ItemForm({ type = 'add', id }) {
                                     classNames={cx('col')}
                                     label={'Số Người'}
                                     state={state.data.bed}
-                                    setState={(value) => {
-                                        dispatch(setData(Number.parseInt(value), 'bed'));
-                                    }}
+                                    setState={handleChangeBed}
                                 />
 
                                 <CardItem
@@ -349,13 +360,7 @@ function ItemForm({ type = 'add', id }) {
                 </div>
                 <div className={cx('row')}>
                     <CardBox label="Giá tour">
-                        <CardItem
-                            label={'Giá'}
-                            state={state.data.price}
-                            setState={(value) => {
-                                dispatch(setData(Number.parseInt(value), 'price'));
-                            }}
-                        />
+                        <CardItem label={'Giá'} state={state.data.price} setState={handleChangePrice} />
                         {isValid.type.includes('price') && (
                             <span className=" text-sm font-normal text-red-400">Không được bỏ trống trường này</span>
                         )}

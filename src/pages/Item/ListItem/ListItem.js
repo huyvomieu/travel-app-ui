@@ -139,9 +139,9 @@ function Item() {
                                             <>
                                                 <TableHead>Ảnh</TableHead>
                                                 <TableHead>Tên Tour</TableHead>
-                                                <TableHead>Thời gian</TableHead>
-                                                <TableHead>Giá</TableHead>
-                                                <TableHead>Người</TableHead>
+                                                <TableHead>Thời gian đi</TableHead>
+                                                <TableHead>Giá/Người</TableHead>
+                                                <TableHead>Số người</TableHead>
                                                 <TableHead>Trạng thái</TableHead>
                                             </>
                                         )}

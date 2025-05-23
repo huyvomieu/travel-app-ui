@@ -18,6 +18,7 @@ function CategoryForm({ type = 'add', id }) {
     const [state, dispatch] = useReducer(reducer, initState);
     const [alert, setAlert] = useState(false);
     const [alertMessage, setAlertmessage] = useState('');
+    const [isValid, setIsValid] = useState({ type: [], message: '' });
     const { setLoading } = useLoading();
     useEffect(() => {
         const fetchData = async () => {
@@ -57,6 +58,16 @@ function CategoryForm({ type = 'add', id }) {
     const contentRef = useContext(ContentScrollContext);
 
     function handleClickSave() {
+        const keys = Object.keys(state).filter(
+            (key) => state[key] !== 'key' && state[key] !== 'Description' && !state[key],
+        );
+
+        if (keys.length > 3) {
+            setIsValid({ type: keys, message: '' });
+            handleScrollTop();
+            return;
+        }
+
         const fetchAPI = async () => {
             try {
                 setLoading(true);
@@ -113,7 +124,6 @@ function CategoryForm({ type = 'add', id }) {
             try {
                 setLoading(true);
                 const res = await getDeleteCategory(state.Id, 'DELETE');
-                console.log('OK');
                 if (res.status === 200) {
                     handleScrollTop();
                     setAlert(true);
@@ -139,6 +149,12 @@ function CategoryForm({ type = 'add', id }) {
         setAlert(false);
         setAlertmessage('');
     }
+    function handleFocus() {
+        setIsValid((prev) => {
+            prev.type = prev.type.filter((type) => type !== 'Name');
+            return prev;
+        });
+    }
     return (
         <div className={cx('wrapper')}>
             {alert && <Alert content={alertMessage} success handleClose={handleCloseAlert} />}
@@ -146,7 +162,17 @@ function CategoryForm({ type = 'add', id }) {
                 <div className={cx('main-layout')}>
                     <div className={cx('main-card')}>
                         <div className={cx('inner')}>
-                            <CardItem label={'Tên danh mục'} state={state.Name} setState={handleChangeCategory} />
+                            <CardItem
+                                label={'Tên danh mục'}
+                                state={state.Name}
+                                setState={handleChangeCategory}
+                                onFocus={handleFocus}
+                            />
+                            {isValid.type.includes('Name') && (
+                                <span className="mb-2 text-sm font-normal text-red-400">
+                                    Không được bỏ trống trường này
+                                </span>
+                            )}
                             <CardItem
                                 control="textarea"
                                 label={'Mô tả'}

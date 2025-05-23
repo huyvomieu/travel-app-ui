@@ -16,6 +16,7 @@ const cx = classNames.bind(styles);
 function OrderList() {
     const navigate = useNavigate();
     const [orders, setOrders] = useState([]);
+
     const { setLoading } = useLoading();
     useEffect(() => {
         const fetchData = async () => {
@@ -86,11 +87,10 @@ function OrderList() {
                                 <tr className={cx('row')}>
                                     <th>Mã đơn hàng</th>
                                     <th>Khách hàng</th>
-                                    <th>Tour</th>
+                                    <th>Tên Tour</th>
                                     <th>Thời gian đặt</th>
                                     <th>Tổng tiền</th>
                                     <th>Trạng thái</th>
-                                    <th>Hành động</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -103,7 +103,11 @@ function OrderList() {
                                         >
                                             <td className={cx('order-id')}>{order.orderId}</td>
                                             <td>{order.userInfo.name}</td>
-                                            <td>{order.tourInfo.title}</td>
+                                            <td>
+                                                {order.tourInfo.title?.length > 25
+                                                    ? order.tourInfo.title.slice(0, 25) + '...'
+                                                    : order.tourInfo.title}
+                                            </td>
                                             <td>{order.date}</td>
                                             <td>{order.total}VND</td>
                                             <td>
@@ -116,9 +120,6 @@ function OrderList() {
                                                 >
                                                     {order.status}
                                                 </span>
-                                            </td>
-                                            <td className={cx('more')}>
-                                                <IoIosMore />
                                             </td>
                                         </tr>
                                     ))
