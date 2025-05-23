@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import styles from './Alert.module.scss';
 import { IoIosCloseCircleOutline } from 'react-icons/io';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 const cx = classNames.bind(styles);
 
@@ -14,8 +14,8 @@ function Alert({
     warning = false,
     dark = false,
     hidden = false,
+    handleClose,
 }) {
-    const [showBox, setShowBox] = useState(true);
     const classes = cx('wrapper', {
         primary,
         success,
@@ -26,16 +26,12 @@ function Alert({
     });
 
     return (
-        <>
-            {showBox && (
-                <div className={classes}>
-                    <span>{content}</span>
-                    <span className={cx('close')} onClick={() => setShowBox(false)}>
-                        <IoIosCloseCircleOutline />
-                    </span>
-                </div>
-            )}
-        </>
+        <div className={classes}>
+            <span>{content}</span>
+            <span className={cx('close')} onClick={handleClose}>
+                <IoIosCloseCircleOutline />
+            </span>
+        </div>
     );
 }
 

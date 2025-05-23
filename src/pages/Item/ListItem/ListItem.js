@@ -20,6 +20,9 @@ function Item() {
     const [tours, setTours] = useState([]);
     const [checkedItems, setCheckedItems] = useState({});
 
+    // const meta = data.meta;
+    // const tours = data.data ?? [];
+
     const allChecked = Object.values(checkedItems).every(Boolean);
     const someChecked = Object.values(checkedItems).some(Boolean);
 
@@ -31,8 +34,8 @@ function Item() {
         const fetchAPI = async () => {
             setLoading(true);
             try {
-                const res = await getDeleteItem();
-                setTours(res);
+                const res = await getDeleteItem(null, 'GET', 1);
+                setTours(res.data);
             } catch (error) {
                 console.log(error);
             } finally {
@@ -138,7 +141,7 @@ function Item() {
                                                 <TableHead>Tên Tour</TableHead>
                                                 <TableHead>Thời gian</TableHead>
                                                 <TableHead>Giá</TableHead>
-                                                <TableHead>Giường</TableHead>
+                                                <TableHead>Người</TableHead>
                                                 <TableHead>Trạng thái</TableHead>
                                             </>
                                         )}
@@ -169,9 +172,11 @@ function Item() {
                                                 <TableCell>{data.bed}</TableCell>
                                                 <TableCell>
                                                     <span
-                                                        className={classNames('p-2 rounded-full', {
-                                                            'bg-green-400': data.status,
-                                                            'bg-red-400': !data.status,
+                                                        className={classNames('px-3 py-2 rounded-full', {
+                                                            'bg-[#d4edda]': data.status,
+                                                            'text-[#155724]': data.status,
+                                                            'bg-[#f8d7da]': !data.status,
+                                                            'text-[#721c24]': !data.status,
                                                         })}
                                                     >
                                                         {data.status === 1 && 'Hiển thị'}
@@ -184,9 +189,13 @@ function Item() {
                                 </TableBody>
                                 <TableFooter>
                                     <TableRow>
-                                        <TableCell colSpan="7" className="flex w-full justify-center">
-                                            <Button>Trước</Button>
-                                            <Button>Sau</Button>
+                                        <TableCell colSpan="7">
+                                            <div className="flex justify-center">
+                                                <Button>Trước</Button>
+                                                <Button primary>1</Button>
+                                                <Button>2</Button>
+                                                <Button>Sau</Button>
+                                            </div>
                                         </TableCell>
                                     </TableRow>
                                 </TableFooter>

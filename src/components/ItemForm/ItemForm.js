@@ -267,7 +267,7 @@ function ItemForm({ type = 'add', id }) {
                                     min="0"
                                     max="100"
                                     classNames={cx('col')}
-                                    label={'Số giường'}
+                                    label={'Số Người'}
                                     state={state.data.bed}
                                     setState={(value) => {
                                         dispatch(setData(Number.parseInt(value), 'bed'));
@@ -302,7 +302,9 @@ function ItemForm({ type = 'add', id }) {
                     <div className={cx('next-card')}>
                         <div className="p-4 bg-white">
                             <div>Trạng thái</div>
-                            <Radio ref={inputShowRef}>Hiển thị</Radio>
+                            <Radio ref={inputShowRef} defaultChecked={true}>
+                                Hiển thị
+                            </Radio>
                             <Radio ref={inputHideRef}>Ẩn</Radio>
                         </div>
 

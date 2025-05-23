@@ -18,6 +18,11 @@ import { Select, SelectValue, SelectTrigger, SelectContent, SelectItem } from '.
 function List() {
     const [categories, setCategories] = useState([]);
     const { setLoading } = useLoading();
+    const [checkedItems, setCheckedItems] = useState({});
+
+    const allChecked = Object.values(checkedItems).every(Boolean);
+    const someChecked = Object.values(checkedItems).some(Boolean);
+
     const navigate = useNavigate();
     useEffect(() => {
         const fetchAPI = async () => {
@@ -33,6 +38,38 @@ function List() {
         };
         fetchAPI();
     }, []);
+
+    // Khi categories thay đổi, cập nhật checkedItems
+    useEffect(() => {
+        const newChecked = {};
+        categories.forEach((tour) => {
+            newChecked[tour.key] = false;
+        });
+        setCheckedItems(newChecked);
+    }, [categories]);
+    const handleClickRow = (e, data) => {
+        if (e.target.type === 'checkbox') {
+            // e.preventDefault();
+        } else {
+            navigate(`/category/${data.key}`);
+        }
+    };
+    const handleCheckAll = (e) => {
+        const checked = e.target.checked;
+        const newCheckedItem = {};
+        categories.forEach((item) => {
+            newCheckedItem[item.key] = checked;
+        });
+        setCheckedItems(newCheckedItem);
+    };
+
+    const handleItemChange = (e) => {
+        const { name, checked } = e.target;
+        setCheckedItems((prev) => ({
+            ...prev,
+            [name]: checked,
+        }));
+    };
     return (
         <div className="mt-8 mr-8">
             <div className="">
@@ -54,7 +91,7 @@ function List() {
                                 <SelectContent>
                                     <SelectItem value="all">Tất cả danh mục</SelectItem>
                                     <SelectItem value="show">Danh mục hiển thị</SelectItem>
-                                    <SelectItem value="show">Danh mục ẩn</SelectItem>
+                                    <SelectItem value="hide">Danh mục ẩn</SelectItem>
                                 </SelectContent>
                             </Select>
                             <Select defaultValue="newest">
@@ -74,7 +111,7 @@ function List() {
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead>
-                                            <input type="checkbox" />
+                                            <input type="checkbox" onChange={handleCheckAll} checked={allChecked} />
                                         </TableHead>
                                         <TableHead>Ảnh</TableHead>
                                         <TableHead>Tên Danh mục</TableHead>
@@ -85,9 +122,14 @@ function List() {
                                 <TableBody>
                                     {categories.map((data) => {
                                         return (
-                                            <TableRow onClick={() => navigate(`/category/${data.key}`)} key={data.key}>
+                                            <TableRow onClick={(e) => handleClickRow(e, data)} key={data.key}>
                                                 <TableCell>
-                                                    <input type="checkbox" />
+                                                    <input
+                                                        type="checkbox"
+                                                        onChange={handleItemChange}
+                                                        name={data.key}
+                                                        checked={checkedItems[data.key]}
+                                                    />
                                                 </TableCell>
                                                 <TableCell>
                                                     <img
@@ -99,7 +141,17 @@ function List() {
                                                 <TableCell>{data.Name}</TableCell>
                                                 <TableCell>{data.Description}</TableCell>
                                                 <TableCell>
-                                                    <span className="p-2 rounded-full bg-green-400">Hiển thị</span>
+                                                    <span
+                                                        className={classNames('min-w-4 px-3 py-2 rounded-full', {
+                                                            'bg-[#d4edda]': data.status,
+                                                            'text-[#155724]': data.status,
+                                                            'bg-[#f8d7da]': !data.status,
+                                                            'text-[#721c24]': !data.status,
+                                                        })}
+                                                    >
+                                                        {data.status === 1 && 'Hiển thị'}
+                                                        {data.status === 0 && 'Ẩn'}
+                                                    </span>
                                                 </TableCell>
                                             </TableRow>
                                         );

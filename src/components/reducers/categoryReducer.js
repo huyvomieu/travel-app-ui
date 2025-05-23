@@ -4,6 +4,7 @@ export const initState = {
     ImagePath: '',
     Name: '',
     Description: '',
+    status: 1,
 };
 
 export const setData = (payload, prop) => {

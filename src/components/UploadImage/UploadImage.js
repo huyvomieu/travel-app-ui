@@ -8,19 +8,27 @@ const cx = classNames.bind(styles);
 function UploadImage({ src, className }, ref) {
     const [file, setFile] = useState(null);
     const [previewImg, setPreviewImg] = useState('');
-
+    const [isPreview, setIsPreview] = useState(false);
     const inputRef = useRef();
 
-    useEffect(() => {});
+    useEffect(() => {
+        setPreviewImg(src);
+        if (src) {
+            setIsPreview(true);
+        }
+    }, [src]);
     function handleResetBoxUpload() {
         setFile(null);
         setPreviewImg('');
+        setIsPreview(false);
     }
     useImperativeHandle(ref, () => ({
         getLinkImage: async () => {
             if (file) {
                 const resultURL = await uploadImageToClound(file);
                 return resultURL;
+            } else if (previewImg) {
+                return previewImg;
             } else {
                 return alert('Vui lòng tải ảnh lên!');
             }
@@ -36,6 +44,7 @@ function UploadImage({ src, className }, ref) {
             const reader = new FileReader();
             reader.onload = (e) => {
                 setPreviewImg(e.target.result);
+                setIsPreview(true);
             };
             // Đọc nội dung file dưới dạng Data URL (dùng cho ảnh, audio, v.v.) => Kích hoạt onload sau khi đọc song
             reader.readAsDataURL(currentFile);
@@ -52,7 +61,7 @@ function UploadImage({ src, className }, ref) {
             <div className={cx('inner')}>
                 <strong className={cx('card-title')}>Ảnh</strong>
                 <div className={cx('box-upload-img')}>
-                    <div className={cx({ 'd-none': !previewImg || !src }, 'actions')}>
+                    <div className={cx({ 'd-none': !previewImg }, 'actions')}>
                         <button className={cx('btn-delete')} onClick={handleResetBoxUpload}>
                             Xóa
                         </button>
@@ -62,18 +71,20 @@ function UploadImage({ src, className }, ref) {
                     </div>
                     <img
                         className={cx('img')}
-                        src={src || previewImg || null}
+                        src={previewImg || null}
                         alt="avatar"
                         onLoad={handleLoad}
                         onError={handleError}
                     />
+
                     <Button
                         primary
                         small
-                        children="Upload ảnh"
-                        classNames={cx('btn-upload')}
+                        classNames={cx('btn-upload', { 'd-none': isPreview })}
                         onClick={handleClickBtn}
-                    />
+                    >
+                        Upload ảnh
+                    </Button>
                     <input
                         defaultValue={null}
                         ref={inputRef}

@@ -12,6 +12,7 @@
 .box-upload-img {
     position: relative;
     min-height: 240px;
+    padding: 16px;
     background-color: #fafbfc;
 }
 .btn-upload {
@@ -55,5 +56,5 @@
 }
 
 .d-none {
-    display: none;
+    display: none !important;
 }

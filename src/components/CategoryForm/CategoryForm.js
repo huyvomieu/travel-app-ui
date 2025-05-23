@@ -1,6 +1,6 @@
 import classNames from 'classnames/bind';
 import styles from './CategoryForm.module.scss';
-import { useState, useRef, useReducer, useEffect } from 'react';
+import { useState, useRef, useReducer, useEffect, useContext } from 'react';
 import CardItem from '../Card/CardItem/CardItem';
 import UploadImage from '../UploadImage';
 import reducer, { initState, setData, getData } from '../reducers/categoryReducer';
@@ -10,13 +10,14 @@ import { useLoading } from '../context/LoadingContext';
 import Radio from '../ui/Radio/Radio';
 import { useNavigate } from 'react-router-dom';
 import Button from '../ui/Button';
+import { ContentScrollContext } from '../context/ContentScrollContext';
 
 const cx = classNames.bind(styles);
 
 function CategoryForm({ type = 'add', id }) {
     const [state, dispatch] = useReducer(reducer, initState);
     const [alert, setAlert] = useState(false);
-
+    const [alertMessage, setAlertmessage] = useState('');
     const { setLoading } = useLoading();
     useEffect(() => {
         const fetchData = async () => {
@@ -37,8 +38,24 @@ function CategoryForm({ type = 'add', id }) {
     const uploadImageRef = useRef();
     const inputShowRef = useRef();
     const inputHideRef = useRef();
-
+    useEffect(() => {
+        const handleInputShowClick = (e) => {
+            dispatch(setData(1, 'status'));
+        };
+        const handleInputHideClick = (e) => {
+            dispatch(setData(0, 'status'));
+        };
+        inputShowRef.current.addEventListener('click', handleInputShowClick);
+        inputHideRef.current.addEventListener('click', handleInputHideClick);
+        return () => {
+            window.removeEventListener('click', handleInputShowClick);
+            window.removeEventListener('click', handleInputHideClick);
+        };
+    }, []);
     const navigate = useNavigate();
+
+    const contentRef = useContext(ContentScrollContext);
+
     function handleClickSave() {
         const fetchAPI = async () => {
             try {
@@ -46,11 +63,22 @@ function CategoryForm({ type = 'add', id }) {
                 const result = await uploadImageRef.current?.getLinkImage();
                 if (result) {
                     state.ImagePath = result;
-                    const res = await postPutCategory(state, 'POST');
-                    if (res.status === 201) {
-                        setAlert(true);
+                    if (type === 'add') {
+                        const res = await postPutCategory(state, 'POST');
+                        if (res.status === 201) {
+                            setAlert(true);
+                            setAlertmessage('Thêm danh mục thành công!');
+                        } else {
+                            throw new Error('Lỗi thêm mới Category');
+                        }
                     } else {
-                        throw new Error('Lỗi thêm mới Category');
+                        const res = await postPutCategory(state, 'PUT');
+                        if (res.status === 200) {
+                            setAlert(true);
+                            setAlertmessage('Sửa danh mục thành công!');
+                        } else {
+                            throw new Error('Lỗi Sửa Category');
+                        }
                     }
                 } else {
                     throw new Error('Lỗi tải ảnh lên');
@@ -63,35 +91,77 @@ function CategoryForm({ type = 'add', id }) {
         };
         fetchAPI();
     }
+
+    function handleChangeCategory(value) {
+        if (value.length > 50) {
+            return;
+        }
+
+        dispatch(setData(value, 'Name'));
+    }
+    function handleChangeDescription(value) {
+        if (value.length > 1000) {
+            return;
+        }
+
+        dispatch(setData(value, 'Description'));
+    }
+    function handleConFirmDelete() {
+        console.log(state);
+
+        const fetchAPI = async () => {
+            try {
+                setLoading(true);
+                const res = await getDeleteCategory(state.Id, 'DELETE');
+                console.log('OK');
+                if (res.status === 200) {
+                    handleScrollTop();
+                    setAlert(true);
+                    setAlertmessage('Xóa danh mục thành công!');
+                    setTimeout(() => {
+                        navigate('/category');
+                    }, 2000);
+                } else {
+                }
+            } catch (error) {
+                setAlert(true);
+                setAlertmessage('Có lỗi xảy ra, vui lòng thử lại!');
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchAPI();
+    }
+    function handleScrollTop() {
+        contentRef.current?.scrollTo({ top: 0, behavior: 'auto' });
+    }
+    function handleCloseAlert() {
+        setAlert(false);
+        setAlertmessage('');
+    }
     return (
         <div className={cx('wrapper')}>
-            {alert && <Alert content="Thêm danh mục thành công!" success />}
+            {alert && <Alert content={alertMessage} success handleClose={handleCloseAlert} />}
             <div className={cx('inner')}>
                 <div className={cx('main-layout')}>
                     <div className={cx('main-card')}>
                         <div className={cx('inner')}>
-                            <CardItem
-                                label={'Tên danh mục'}
-                                state={state.Name}
-                                setState={(value) => {
-                                    dispatch(setData(value, 'Name'));
-                                }}
-                            />
+                            <CardItem label={'Tên danh mục'} state={state.Name} setState={handleChangeCategory} />
                             <CardItem
                                 control="textarea"
                                 label={'Mô tả'}
                                 rows="10"
                                 state={state.Description}
-                                setState={(value) => {
-                                    dispatch(setData(value, 'Description'));
-                                }}
+                                setState={handleChangeDescription}
                             />
                         </div>
                     </div>
                     <div className={cx('next-card')}>
                         <div className="p-4 bg-white">
                             <div>Trạng thái</div>
-                            <Radio ref={inputShowRef}>Hiển thị</Radio>
+                            <Radio ref={inputShowRef} defaultChecked={true}>
+                                Hiển thị
+                            </Radio>
                             <Radio ref={inputHideRef}>Ẩn</Radio>
                         </div>
 
@@ -100,7 +170,7 @@ function CategoryForm({ type = 'add', id }) {
                 </div>
                 <div className="flex justify-between items-center ">
                     {type === 'edit' ? (
-                        <Button danger onClick={() => {}}>
+                        <Button danger onClick={handleConFirmDelete}>
                             Xóa
                         </Button>
                     ) : (
