@@ -34,13 +34,10 @@ function Sidebar() {
                     content="Tour"
                     active={action === 'category' || action === 'items'}
                     icon={<MdOutlineTravelExplore />}
-                    children={
-                        <>
-                            <MenuItem to="/category" icon={<MdOutlineTravelExplore />} content="Danh mục Tour" />
-                            <MenuItem to="/items" icon={<MdOutlineTravelExplore />} content="Danh sách Tour" />
-                        </>
-                    }
-                />
+                >
+                    <MenuItem submenu to="/category" icon={<MdOutlineTravelExplore />} content="Danh mục Tour" />
+                    <MenuItem submenu to="/items" icon={<MdOutlineTravelExplore />} content="Danh sách Tour" />
+                </MenuItem>
 
                 <MenuItem to="/order" active={action === 'order'} content="Đơn hàng" icon={<IoCartOutline />} />
                 <MenuItem to="/customers" active={action === 'customers'} content="Khách hàng" icon={<FiUser />} />

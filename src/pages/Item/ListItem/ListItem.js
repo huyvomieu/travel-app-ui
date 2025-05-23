@@ -3,7 +3,7 @@ import { getDeleteItem } from '../../../services/ItemService';
 import { useEffect, useState } from 'react';
 import Button from '../../../components/ui/Button';
 import { useLoading } from '../../../components/context/LoadingContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
     Table,
     TableHeader,
@@ -15,27 +15,35 @@ import {
 } from '../../../components/ui/Table/Table';
 import { CardTitle } from '../../../components/ui/Card/Card';
 import { Select, SelectValue, SelectTrigger, SelectContent, SelectItem } from '../../../components/ui/Filter/Select';
+import useQuery from '../../../hooks/useQuery';
 
 function Item() {
-    const [tours, setTours] = useState([]);
+    const [data, setData] = useState({});
     const [checkedItems, setCheckedItems] = useState({});
+    console.log('re-render');
 
-    // const meta = data.meta;
-    // const tours = data.data ?? [];
+    const meta = data.meta;
+    const tours = data.data;
+    console.log(meta);
+
+    const totalPage = meta?.pagination?.total_page;
+    const currentPage = meta?.pagination?.current_page;
 
     const allChecked = Object.values(checkedItems).every(Boolean);
     const someChecked = Object.values(checkedItems).some(Boolean);
 
-    const { setLoading } = useLoading();
+    const { loading, setLoading } = useLoading();
     const navigate = useNavigate();
+    const query = useQuery();
+    const page = query.get('page');
 
     // Call API khi mount
     useEffect(() => {
         const fetchAPI = async () => {
             setLoading(true);
             try {
-                const res = await getDeleteItem(null, 'GET', 1);
-                setTours(res.data);
+                const res = await getDeleteItem(null, 'GET', page ?? 1);
+                setData(res);
             } catch (error) {
                 console.log(error);
             } finally {
@@ -43,12 +51,12 @@ function Item() {
             }
         };
         fetchAPI();
-    }, []);
+    }, [page]);
 
     // Khi tours thay đổi, cập nhật checkedItems
     useEffect(() => {
         const newChecked = {};
-        tours.forEach((tour) => {
+        tours?.forEach((tour) => {
             newChecked[tour.key] = false;
         });
         setCheckedItems(newChecked);
@@ -77,6 +85,16 @@ function Item() {
             [name]: checked,
         }));
     };
+    const handlePrevPage = () => {
+        if (Number(page) === 1) return;
+        navigate(`/items?page=${Number(page) - 1}`);
+    };
+    const handleNextPage = () => {
+        if (Number(page) === totalPage) return;
+        navigate(`/items?page=${Number(page) + 1}`);
+    };
+    if (loading) return null;
+    if (!tours) return null;
     return (
         <div className="mt-8 mr-8">
             <div className="">
@@ -191,10 +209,16 @@ function Item() {
                                     <TableRow>
                                         <TableCell colSpan="7">
                                             <div className="flex justify-center">
-                                                <Button>Trước</Button>
-                                                <Button primary>1</Button>
-                                                <Button>2</Button>
-                                                <Button>Sau</Button>
+                                                <Button onClick={handlePrevPage}>Trước</Button>
+                                                {new Array(totalPage).fill(null).map((_, i) => (
+                                                    <Button
+                                                        primary={currentPage === i + 1}
+                                                        onClick={() => navigate(`/items?page=${i + 1}`)}
+                                                    >
+                                                        {i + 1}
+                                                    </Button>
+                                                ))}
+                                                <Button onClick={handleNextPage}>Sau</Button>
                                             </div>
                                         </TableCell>
                                     </TableRow>

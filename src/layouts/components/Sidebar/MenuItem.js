@@ -6,7 +6,7 @@ import { useState } from 'react';
 
 const cx = classNames.bind(styles);
 
-function MenuItem({ children, to, content, icon, active = false }) {
+function MenuItem({ children, to, content, icon, classNames, active = false, submenu = false }) {
     const [hideShow, setHideShow] = useState(true);
     function handleClick(e) {
         setHideShow(!hideShow);
@@ -16,8 +16,8 @@ function MenuItem({ children, to, content, icon, active = false }) {
         Tag = 'div';
     }
     return (
-        <Tag to={to} onClick={handleClick}>
-            <div className={cx('menu-box', { active })}>
+        <Tag to={to} onClick={handleClick} className={classNames}>
+            <div className={cx('menu-box', { active, submenu })}>
                 <div className={cx('menu-icon')}>{icon}</div>
                 <p className={cx('menu-item')}>{content}</p>
             </div>
