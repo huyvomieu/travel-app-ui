@@ -12,12 +12,12 @@ const CardHeader = forwardRef(({ className, ...props }, ref) => (
 CardHeader.displayName = 'CardHeader';
 
 const CardTitle = forwardRef(({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('text-2xl font-semibold leading-none tracking-tight', className)} {...props} />
+    <div ref={ref} className={cn('text-xl font-semibold leading-none tracking-tight', className)} {...props} />
 ));
 CardTitle.displayName = 'CardTitle';
 
 const CardDescription = forwardRef(({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('text-sm text-muted-foreground', className)} {...props} />
+    <div ref={ref} className={cn('text-base text-muted-foreground', className)} {...props} />
 ));
 CardDescription.displayName = 'CardDescription';
 
