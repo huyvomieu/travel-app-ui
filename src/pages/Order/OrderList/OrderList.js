@@ -4,13 +4,16 @@ import Input from '../../../components/ui/Input';
 import Button from '../../../components/Button';
 import { CiFilter } from 'react-icons/ci';
 import { RxDownload } from 'react-icons/rx';
-import { IoIosArrowDown, IoIosMore } from 'react-icons/io';
 import { useNavigate } from 'react-router-dom';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 import { useEffect, useState } from 'react';
 import { getOrder } from '../../../services/OrderService';
 import { useLoading } from '../../../components/context/LoadingContext';
+import useQuery from '../../../hooks/useQuery';
+
+import { Select, SelectValue, SelectTrigger, SelectContent, SelectItem } from '../../../components/ui/Filter/Select';
+
 const cx = classNames.bind(styles);
 
 function OrderList() {
@@ -18,11 +21,15 @@ function OrderList() {
     const [orders, setOrders] = useState([]);
 
     const { setLoading } = useLoading();
+
+    const query = useQuery();
+    const filter = query.get('filter');
+
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const res = await getOrder(null, 'GET');
+                const res = await getOrder(null, 'GET', { filter });
                 setOrders(res);
             } catch (error) {
             } finally {
@@ -30,7 +37,7 @@ function OrderList() {
             }
         };
         fetchData();
-    }, []);
+    }, [filter]);
 
     function handleExport() {
         const worksheet = XLSX.utils.json_to_sheet(orders);
@@ -48,6 +55,9 @@ function OrderList() {
         });
 
         saveAs(fileData, `DanhSachDonHang_${Date.now()}.xlsx`);
+    }
+    function handleChangeFilter(value) {
+        navigate('/order?filter=' + value);
     }
     return (
         <div className={cx('wrapper')}>
@@ -72,14 +82,27 @@ function OrderList() {
                         </div>
                     </div>
                     <div className={cx('filter')}>
-                        <Button outline classNames={cx('br-4', 'filter-btn')}>
-                            <span>Tất cả đơn hàng</span>
-                            <IoIosArrowDown />
-                        </Button>
-                        <Button outline classNames={cx('br-4', 'filter-btn')}>
-                            <span>Đơn hàng mới nhất</span>
-                            <IoIosArrowDown />
-                        </Button>
+                        <Select defaultValue="all" onValueChange={handleChangeFilter}>
+                            <SelectTrigger className="w-[180px] h-16 border border-solid border-[#e5e5e5]">
+                                <SelectValue placeholder="Lọc theo" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">Tất cả đơn hàng</SelectItem>
+                                <SelectItem value="show">Đơn hàng hiển thị</SelectItem>
+                                <SelectItem value="deleted">Đơn hàng đã xóa</SelectItem>
+                            </SelectContent>
+                        </Select>
+                        <Select defaultValue="newest" onValueChange={handleChangeFilter}>
+                            <SelectTrigger className="w-[180px] h-16 border border-solid border-[#e5e5e5]">
+                                <SelectValue placeholder="Sắp xếp theo" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="newest">Đơn hàng mới nhất</SelectItem>
+                                <SelectItem value="oldest">Đơn hàng cũ nhất</SelectItem>
+                                <SelectItem value="highest">Giá lớn nhất</SelectItem>
+                                <SelectItem value="lowest">Giá nhỏ nhất</SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
                     <div className={cx('table')}>
                         <table>

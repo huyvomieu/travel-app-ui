@@ -71,7 +71,7 @@ function List() {
         }));
     };
     return (
-        <div className="mt-8 mr-8">
+        <div className="mt-2 mr-8">
             <div className="">
                 <div className="flex justify-end mb-4">
                     <Button to="/category/create" primary>

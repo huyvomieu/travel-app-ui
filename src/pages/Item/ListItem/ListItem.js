@@ -20,11 +20,9 @@ import useQuery from '../../../hooks/useQuery';
 function Item() {
     const [data, setData] = useState({});
     const [checkedItems, setCheckedItems] = useState({});
-    console.log('re-render');
 
     const meta = data.meta;
     const tours = data.data;
-    console.log(meta);
 
     const totalPage = meta?.pagination?.total_page;
     const currentPage = meta?.pagination?.current_page;
@@ -96,7 +94,7 @@ function Item() {
     if (loading) return null;
     if (!tours) return null;
     return (
-        <div className="mt-8 mr-8">
+        <div className="mr-8">
             <div className="">
                 <div className="flex justify-end mb-4">
                     <Button to="/items/create" primary>
