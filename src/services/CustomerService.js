@@ -1,42 +1,26 @@
 import * as httpRequest from '../utils/httpRequest';
 
-export const getCustomer = async (id, params) => {
-    try {
-        const res = await httpRequest.get('user', {
-            params: { id, ...params },
-        });
-        return res;
-    } catch (error) {
-        console.log(error);
-    }
+export const getCustomer = async (id, params = {}) => {
+    const path = id ? `user/${id}` : 'user';
+    return httpRequest.get(path, { params });
 };
 
 export const deleteCustomer = async (ids) => {
-    try {
-        if (ids.length >= 1) {
-            const res = await httpRequest.delet('user', {
-                params: { ids },
-            });
-            return res;
-        } else {
-            throw new Error('Không có Id');
-        }
-    } catch (error) {
-        console.log(error);
+    const userIds = Array.isArray(ids) ? ids.filter(Boolean) : [ids].filter(Boolean);
+
+    if (!userIds.length) {
+        throw new Error('Không có khách hàng nào được chọn');
     }
+
+    return httpRequest.delet('user', {
+        params: { ids: userIds.join(',') },
+    });
 };
 
 export const postPutCustomer = async (body, type) => {
-    try {
-        if (type === 'PUT') {
-            const res = await httpRequest.put('user?username=' + body.username, body);
-            return res;
-        } else {
-            const res = await httpRequest.post('user', body);
-            return res;
-        }
-    } catch (error) {
-        console.log(error);
-        return error;
+    if (type === 'PUT') {
+        return httpRequest.put(`user/${body.username}`, body);
     }
+
+    return httpRequest.post('user', body);
 };

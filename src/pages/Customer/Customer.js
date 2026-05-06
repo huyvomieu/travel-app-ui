@@ -1,19 +1,37 @@
-import Button from '../../components/Button';
+import { Plus, Users } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import ListCustomer from './ListCustomer/ListCustomer';
 
 function Customer() {
     return (
-        <div className="p-6 bg-gray-50 min-h-screen">
-            <div className="max-w-7xl mx-auto rounded-xl shadow-sm border border-gray-200 p-6 bg-white">
-                <div className="flex justify-between items-center mb-6">
-                    <h1 className="text-2xl font-bold text-gray-800">Danh sách khách hàng</h1>
+        <div className="p-4 md:p-8 bg-slate-50 min-h-[calc(100vh-4rem)]">
+            <div className="w-full space-y-6">
+                {/* Header */}
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <div className="flex items-center gap-4 mb-4 sm:mb-0">
+                        <div className="p-3 bg-blue-50 text-blue-600 rounded-xl">
+                            <Users className="w-6 h-6" />
+                        </div>
+                        <div>
+                            <h1 className="text-2xl font-bold text-slate-800 tracking-tight">Quản lý khách hàng</h1>
+                            <p className="text-sm text-slate-500 mt-1">Quản lý tài khoản, phân quyền và thông tin người dùng</p>
+                        </div>
+                    </div>
                     <div>
-                        <Button to="/customers/create" primary className="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-md transition duration-200">
+                        <Link 
+                            to="/customers/create" 
+                            className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 px-5 rounded-xl transition-all duration-200 shadow-sm hover:shadow active:scale-95"
+                        >
+                            <Plus className="w-5 h-5" />
                             Thêm khách hàng
-                        </Button>
+                        </Link>
                     </div>
                 </div>
-                <ListCustomer />
+                
+                {/* Content */}
+                <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                    <ListCustomer />
+                </div>
             </div>
         </div>
     );

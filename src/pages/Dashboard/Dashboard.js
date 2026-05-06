@@ -89,7 +89,7 @@ function Dashboard() {
                             <CardHeader>
                                 <CardTitle>Đơn hàng gần đây</CardTitle>
                                 <CardDescription>
-                                    Có <span className="text-red-500">999</span> đơn đã hoàn thành trong tháng này
+                                    Có <span className="text-red-500">19</span> đơn đã hoàn thành trong tháng này
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="pl-2">
@@ -98,8 +98,8 @@ function Dashboard() {
                         </Card>
                         <Card className="col-span-3">
                             <CardHeader>
-                                <CardTitle>Upcoming Tours</CardTitle>
-                                <CardDescription>Tours starting in the next 7 days</CardDescription>
+                                <CardTitle>Tour sắp khởi hành</CardTitle>
+                                <CardDescription>Các tour sẽ khởi hành trong vòng 7 ngày tới</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <div className="space-y-4">
@@ -110,7 +110,7 @@ function Dashboard() {
                                             </div>
                                             <div className="space-y-1">
                                                 <p className="text-base font-medium leading-none">
-                                                    Mountain Explorer Tour
+                                                    Khám phá núi rừng
                                                 </p>
                                                 <p className="text-sm text-muted-foreground">
                                                     Starting in {i} day{i > 1 ? 's' : ''}
@@ -124,15 +124,15 @@ function Dashboard() {
                         </Card>
                         <Card className="col-span-2">
                             <CardHeader>
-                                <CardTitle>Recent Activities</CardTitle>
-                                <CardDescription>Latest system activities</CardDescription>
+                                <CardTitle>Hoạt động gần đây</CardTitle>
+                                <CardDescription>Các hoạt động gần đây của hệ thống</CardDescription>
                             </CardHeader>
                             <CardContent>
                                 <div className="space-y-4">
                                     {[
-                                        { text: 'New tour created', time: '2 hours ago' },
-                                        { text: 'User John Doe updated profile', time: '5 hours ago' },
-                                        { text: 'New booking #1234', time: 'Yesterday' },
+                                        { text: 'Tour mới đã được tạo', time: '2 giờ trước' },
+                                        { text: 'Người dùng John Doe đã cập nhật hồ sơ', time: '5 giờ trước' },
+                                        { text: 'Đặt tour mới #1234', time: 'Hôm qua' },
                                     ].map((activity, i) => (
                                         <div key={i} className="flex items-center gap-4">
                                             <div className="w-2 h-2 rounded-full bg-primary" />
@@ -147,15 +147,15 @@ function Dashboard() {
                         </Card>
                         <Card className="col-span-2">
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle>Calendar</CardTitle>
+                                <CardTitle>Lịch</CardTitle>
                                 <CalendarDays className="h-4 w-4 text-muted-foreground" />
                             </CardHeader>
                             <CardContent>
                                 <div className="space-y-4">
                                     {[
-                                        { date: 'Apr 15', event: 'Team Meeting' },
-                                        { date: 'Apr 18', event: 'New Tour Launch' },
-                                        { date: 'Apr 22', event: 'Marketing Campaign' },
+                                        { date: 'Apr 15', event: 'Cuộc họp team' },
+                                        { date: 'Apr 18', event: 'Ra mắt tour mới' },
+                                        { date: 'Apr 22', event: 'Chiến dịch marketing' },
                                     ].map((event, i) => (
                                         <div key={i} className="flex items-center gap-4">
                                             <div className="w-22 text-center">

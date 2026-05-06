@@ -47,12 +47,12 @@ function Sidebar() {
                     content="Báo cáo"
                     icon={<IoTrendingDownOutline />}
                 />
-                <MenuItem
+                {/* <MenuItem
                     to="/settings"
                     active={action === 'settings'}
                     content="Cài đặt"
                     icon={<IoSettingsOutline />}
-                />
+                /> */}
             </nav>
             <div onClick={logout} className={cx('bottom-menu')}>
                 <MenuItem content="Đăng xuất" icon={<IoLogOutOutline />} />

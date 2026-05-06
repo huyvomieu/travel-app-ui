@@ -125,11 +125,11 @@ function OrderList() {
                                             className={cx('row')}
                                         >
                                             <td className={cx('order-id')}>{order.orderId}</td>
-                                            <td>{order.userInfo.name}</td>
+                                            <td>{order.userInfo?.name || 'Khách ẩn danh'}</td>
                                             <td>
-                                                {order.tourInfo.title?.length > 25
+                                                {order.tourInfo?.title?.length > 25
                                                     ? order.tourInfo.title.slice(0, 25) + '...'
-                                                    : order.tourInfo.title}
+                                                    : order.tourInfo?.title || 'Tour không khả dụng'}
                                             </td>
                                             <td>{order.date}</td>
                                             <td>{order.total}VND</td>

@@ -97,13 +97,13 @@ function Login() {
                         <div className="pb-8">
                             <div className="pb-4 tracking-tight font-bold font text-5xl text-center"></div>
                             <div className="text-sm text-muted-foreground">
-                                <span>Được xây dựng bởi </span>
+                                {/* <span>Được xây dựng bởi </span>
                                 <a
                                     href="https://www.facebook.com/huydz24"
                                     className="text-sm text-blue-600 hover:underline"
                                 >
                                     Huy ng
-                                </a>
+                                </a> */}
                             </div>
                         </div>
                         <div className="pb-4">
