@@ -1,9 +1,11 @@
 import classNames from 'classnames';
 import { getDeleteItem } from '../../../services/ItemService';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import Button from '../../../components/ui/Button';
 import { useLoading } from '../../../components/context/LoadingContext';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import Modal from '../../../components/Modal';
+import Alert from '../../../components/Alert';
 import {
     Table,
     TableHeader,
@@ -27,29 +29,62 @@ function Item() {
     const totalPage = meta?.pagination?.total_page;
     const currentPage = meta?.pagination?.current_page;
 
-    const allChecked = Object.values(checkedItems).every(Boolean);
-    const someChecked = Object.values(checkedItems).some(Boolean);
+    const [searchParams] = useSearchParams();
+    const [statusFilter, setStatusFilter] = useState('all');
+    const [sortFilter, setSortFilter] = useState('newest');
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [alert, setAlert] = useState(null);
+
+    const q = searchParams.get('q') || '';
+    
+    // Client-side filter and sort
+    const processedTours = useMemo(() => {
+        if (!tours) return [];
+        let result = [...tours];
+        if (q) {
+            const lowerQ = q.toLowerCase();
+            result = result.filter(c => c.title?.toLowerCase().includes(lowerQ));
+        }
+        if (statusFilter === 'show') {
+            result = result.filter(c => c.status === 1);
+        } else if (statusFilter === 'hide') {
+            result = result.filter(c => c.status === 0);
+        }
+        if (sortFilter === 'newest') {
+            result.reverse();
+        } else if (sortFilter === 'highest') {
+            result.sort((a, b) => b.price - a.price);
+        } else if (sortFilter === 'lowest') {
+            result.sort((a, b) => a.price - b.price);
+        }
+        return result;
+    }, [tours, q, statusFilter, sortFilter]);
+
+    const allChecked = processedTours.length > 0 && processedTours.every(c => checkedItems[c.key]);
+    const someChecked = processedTours.some(c => checkedItems[c.key]);
 
     const { loading, setLoading } = useLoading();
     const navigate = useNavigate();
     const query = useQuery();
     const page = query.get('page');
 
-    // Call API khi mount
+    const fetchAPI = async () => {
+        setLoading(true);
+        try {
+            const res = await getDeleteItem(null, 'GET', page ?? 1);
+            setData(res);
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchAPI = async () => {
-            setLoading(true);
-            try {
-                const res = await getDeleteItem(null, 'GET', page ?? 1);
-                setData(res);
-            } catch (error) {
-                console.log(error);
-            } finally {
-                setLoading(false);
-            }
-        };
         fetchAPI();
     }, [page]);
+
 
     // Khi tours thay đổi, cập nhật checkedItems
     useEffect(() => {
@@ -69,8 +104,8 @@ function Item() {
 
     const handleCheckAll = (e) => {
         const checked = e.target.checked;
-        const newCheckedItem = {};
-        tours.forEach((item) => {
+        const newCheckedItem = { ...checkedItems };
+        processedTours.forEach((item) => {
             newCheckedItem[item.key] = checked;
         });
         setCheckedItems(newCheckedItem);
@@ -83,6 +118,31 @@ function Item() {
             [name]: checked,
         }));
     };
+
+    const handleEditSelected = () => {
+        const selectedKey = processedTours.find(c => checkedItems[c.key])?.key;
+        if (selectedKey) navigate(`/items/${selectedKey}`);
+    };
+
+    const handleConfirmDelete = async () => {
+        const selectedIds = processedTours.filter(c => checkedItems[c.key]).map(c => c.key);
+        try {
+            setLoading(true);
+            for (const id of selectedIds) {
+                await getDeleteItem(id, 'DELETE');
+            }
+            setAlert({ type: 'success', message: 'Xóa Tour thành công' });
+            setIsModalOpen(false);
+            setCheckedItems({});
+            fetchAPI();
+            setTimeout(() => setAlert(null), 3000);
+        } catch (error) {
+            setAlert({ type: 'danger', message: 'Xóa Tour thất bại' });
+            setTimeout(() => setAlert(null), 3000);
+        } finally {
+            setLoading(false);
+        }
+    };
     const handlePrevPage = () => {
         if (Number(page) === 1) return;
         navigate(`/items?page=${Number(page) - 1}`);
@@ -94,7 +154,20 @@ function Item() {
     if (loading) return null;
     if (!tours) return null;
     return (
-        <div className="mr-8">
+        <div className="mr-8 relative">
+            <div className="absolute top-0 left-0 w-full z-50 px-6 py-4">
+               {alert?.type === 'success' && <Alert success content={alert.message} handleClose={() => setAlert(null)} />}
+               {alert?.type === 'danger' && <Alert danger content={alert.message} handleClose={() => setAlert(null)} />}
+            </div>
+
+            {isModalOpen && (
+                <Modal
+                    title={`Bạn có chắc chắn muốn xóa ${processedTours.filter(c => checkedItems[c.key]).length} Tour?`}
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    onConfirm={handleConfirmDelete}
+                />
+            )}
             <div className="">
                 <div className="flex justify-end mb-4">
                     <Button to="/items/create" primary>
@@ -107,7 +180,7 @@ function Item() {
                             <CardTitle>Tất cả Tour</CardTitle>
                         </div>
                         <div className="p-6 flex items-center gap-4 mb-4">
-                            <Select className="" defaultValue="all">
+                            <Select defaultValue="all" onValueChange={(val) => setStatusFilter(val)}>
                                 <SelectTrigger className="w-[180px] h-16 border border-solid border-[#e5e5e5]">
                                     <SelectValue placeholder="Lọc theo trạng thái" />
                                 </SelectTrigger>
@@ -117,7 +190,7 @@ function Item() {
                                     <SelectItem value="hide">Tour ẩn</SelectItem>
                                 </SelectContent>
                             </Select>
-                            <Select defaultValue="newest">
+                            <Select defaultValue="newest" onValueChange={(val) => setSortFilter(val)}>
                                 <SelectTrigger className="w-[180px] h-16 border border-solid border-[#e5e5e5]">
                                     <SelectValue placeholder="Sắp xếp theo" />
                                 </SelectTrigger>
@@ -138,18 +211,16 @@ function Item() {
                                         </TableHead>
                                         {someChecked ? (
                                             <>
-                                                <TableHead></TableHead>
-                                                <TableHead>
-                                                    <Button className="p-2 border border-solid border-[#e5e5e5]">
-                                                        Sửa tour
-                                                    </Button>
-                                                    <Button className="p-2 border border-solid border-[#e5e5e5]">
-                                                        Xóa tour
-                                                    </Button>
+                                                <TableHead colSpan="6">
+                                                    <div className="flex gap-4">
+                                                        <Button onClick={handleEditSelected} className="p-2 border border-solid border-[#e5e5e5]">
+                                                            Sửa tour
+                                                        </Button>
+                                                        <Button onClick={() => setIsModalOpen(true)} className="p-2 border border-solid border-[#e5e5e5]">
+                                                            Xóa tour
+                                                        </Button>
+                                                    </div>
                                                 </TableHead>
-                                                <TableHead></TableHead>
-                                                <TableHead></TableHead>
-                                                <TableHead></TableHead>
                                             </>
                                         ) : (
                                             <>
@@ -164,7 +235,7 @@ function Item() {
                                     </TableRow>
                                 </TableHeader>
                                 <TableBody>
-                                    {tours.map((data) => {
+                                    {processedTours.map((data) => {
                                         return (
                                             <TableRow key={data.key} onClick={(e) => handleClickRow(e, data)}>
                                                 <TableCell>
@@ -172,7 +243,7 @@ function Item() {
                                                         type="checkbox"
                                                         name={data.key}
                                                         onChange={handleItemChange}
-                                                        checked={checkedItems[data.key]}
+                                                        checked={checkedItems[data.key] || false}
                                                     />
                                                 </TableCell>
                                                 <TableCell>

@@ -11,6 +11,7 @@ import Radio from '../ui/Radio/Radio';
 import { useNavigate } from 'react-router-dom';
 import Button from '../ui/Button';
 import { ContentScrollContext } from '../context/ContentScrollContext';
+import Modal from '../Modal';
 
 const cx = classNames.bind(styles);
 
@@ -19,6 +20,7 @@ function CategoryForm({ type = 'add', id }) {
     const [alert, setAlert] = useState(false);
     const [alertMessage, setAlertmessage] = useState('');
     const [isValid, setIsValid] = useState({ type: [], message: '' });
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const { setLoading } = useLoading();
     useEffect(() => {
         const fetchData = async () => {
@@ -58,12 +60,8 @@ function CategoryForm({ type = 'add', id }) {
     const contentRef = useContext(ContentScrollContext);
 
     function handleClickSave() {
-        const keys = Object.keys(state).filter(
-            (key) => state[key] !== 'key' && state[key] !== 'Description' && !state[key],
-        );
-
-        if (keys.length > 3) {
-            setIsValid({ type: keys, message: '' });
+        if (!state.Name) {
+            setIsValid({ type: ['Name'], message: '' });
             handleScrollTop();
             return;
         }
@@ -118,8 +116,6 @@ function CategoryForm({ type = 'add', id }) {
         dispatch(setData(value, 'Description'));
     }
     function handleConFirmDelete() {
-        console.log(state);
-
         const fetchAPI = async () => {
             try {
                 setLoading(true);
@@ -128,6 +124,7 @@ function CategoryForm({ type = 'add', id }) {
                     handleScrollTop();
                     setAlert(true);
                     setAlertmessage('Xóa danh mục thành công!');
+                    setIsModalOpen(false);
                     setTimeout(() => {
                         navigate('/category');
                     }, 2000);
@@ -158,6 +155,14 @@ function CategoryForm({ type = 'add', id }) {
     return (
         <div className={cx('wrapper')}>
             {alert && <Alert content={alertMessage} success handleClose={handleCloseAlert} />}
+            {isModalOpen && (
+                <Modal
+                    title="Bạn có chắc chắn muốn xóa danh mục này?"
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    onConfirm={handleConFirmDelete}
+                />
+            )}
             <div className={cx('inner')}>
                 <div className={cx('main-layout')}>
                     <div className={cx('main-card')}>
@@ -196,7 +201,7 @@ function CategoryForm({ type = 'add', id }) {
                 </div>
                 <div className="flex justify-between items-center ">
                     {type === 'edit' ? (
-                        <Button danger onClick={handleConFirmDelete}>
+                        <Button danger onClick={() => setIsModalOpen(true)}>
                             Xóa
                         </Button>
                     ) : (

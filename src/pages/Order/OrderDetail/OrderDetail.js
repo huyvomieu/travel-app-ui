@@ -63,10 +63,6 @@ function OrderDetail() {
                             <IoIosPrint className={cx('icon')} />
                             <span>In hoá đơn</span>
                         </Button>
-                        <Button outline>
-                            <RxDownload className={cx('icon')} />
-                            <span>Tải về PDF</span>
-                        </Button>
                     </div>
                 </div>
                 <div className={cx('info')}>

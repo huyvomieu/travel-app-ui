@@ -12,9 +12,14 @@ export function RevenueChart({ data }) {
                     fontSize={12}
                     tickLine={false}
                     axisLine={false}
-                    tickFormatter={(value) => `${value}VND`}
+                    tickFormatter={(value) => {
+                        if (value >= 1000000) return `${(value / 1000000).toLocaleString('vi-VN')}M`;
+                        if (value >= 1000) return `${(value / 1000).toLocaleString('vi-VN')}K`;
+                        return `${value}VND`;
+                    }}
+                    width={80}
                 />
-                <Tooltip formatter={(value) => [`$${value}`, 'Revenue']} labelFormatter={(label) => `Day: ${label}`} />
+                <Tooltip formatter={(value) => [`${value.toLocaleString('vi-VN')} VND`, 'Doanh thu']} labelFormatter={(label) => `Day: ${label}`} />
                 <Line
                     type="monotone"
                     dataKey="revenue"

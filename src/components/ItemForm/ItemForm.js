@@ -8,6 +8,7 @@ import CardItem from '../Card/CardItem';
 import UploadImage from '../UploadImage';
 import Alert from '../Alert';
 import CardBox from '../Card/CardBox';
+import Modal from '../Modal';
 
 import useDebounce from '../../hooks/useDebounce';
 import reducer, {
@@ -38,6 +39,7 @@ function ItemForm({ type = 'add', id }) {
     const [isValid, setIsValid] = useState({ type: [], message: '' });
     const [tippy, setTippy] = useState(false);
     const [tippyTourGuide, setTippyTourGuide] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const categorydebounced = useDebounce(state.searchCategory, 500);
     const guidedebounced = useDebounce(state.searchTourGuide, 500);
@@ -109,10 +111,11 @@ function ItemForm({ type = 'add', id }) {
         };
     }, []);
     function handleClickSave() {
-        const keys = Object.keys(state.data).filter((key) => state.data[key] !== 'key' && state.data[key] === '');
+        const requiredFields = ['title', 'address', 'description', 'dateTour', 'timeTour', 'bed', 'duration', 'price'];
+        const missingKeys = requiredFields.filter(key => state.data[key] === '' || state.data[key] === null || state.data[key] === undefined);
 
-        if (keys.length > 2) {
-            setIsValid({ type: keys, message: '' });
+        if (missingKeys.length > 0) {
+            setIsValid({ type: missingKeys, message: '' });
             handleScrollTop();
             return;
         }
@@ -177,6 +180,7 @@ function ItemForm({ type = 'add', id }) {
                 if (res.status === 200) {
                     dispatch(setAlert({ active: true, content: 'Xóa Tour thành công!' }));
                     handleScrollTop();
+                    setIsModalOpen(false);
                     setTimeout(() => {
                         navigate('/items');
                     }, 2000);
@@ -226,6 +230,14 @@ function ItemForm({ type = 'add', id }) {
     return (
         <div className={cx('wrapper')}>
             {state.alert && <Alert content={state.alertContent} success />}
+            {isModalOpen && (
+                <Modal
+                    title="Bạn có chắc chắn muốn xóa Tour này?"
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                    onConfirm={handleConFirmDelete}
+                />
+            )}
             <div className={cx('inner')}>
                 <div className={cx('main-layout')}>
                     <div className={cx('main-card')}>
@@ -405,7 +417,7 @@ function ItemForm({ type = 'add', id }) {
                 <div style={{ marginBottom: '20px' }}></div>
                 <div className="flex justify-between items-center ">
                     {type === 'edit' ? (
-                        <Button danger onClick={handleConFirmDelete}>
+                        <Button danger onClick={() => setIsModalOpen(true)}>
                             Xóa
                         </Button>
                     ) : (

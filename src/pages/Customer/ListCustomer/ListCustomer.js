@@ -3,7 +3,7 @@ import { ChevronDown, ChevronUp, Trash2, Pencil, AlertCircle } from 'lucide-reac
 import Tippy from '@tippyjs/react/headless';
 import CustomerItem from './CustomerItem';
 import { deleteCustomer, getCustomer } from '../../../services/CustomerService';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import Modal from '../../../components/Modal';
 import Alert from '../../../components/Alert';
 
@@ -15,9 +15,22 @@ function ListCustomer() {
     const [alert, setAlert] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    const selectedCustomers = useMemo(() => customers.filter((customer) => customer.checked), [customers]);
+    const [searchParams] = useSearchParams();
+    const q = searchParams.get('q') || '';
+
+    const processedCustomers = useMemo(() => {
+        if (!q) return customers;
+        const lowerQ = q.toLowerCase();
+        return customers.filter(c => 
+            c.name?.toLowerCase().includes(lowerQ) || 
+            c.email?.toLowerCase().includes(lowerQ) || 
+            c.phone?.toLowerCase().includes(lowerQ)
+        );
+    }, [customers, q]);
+
+    const selectedCustomers = useMemo(() => processedCustomers.filter((customer) => customer.checked), [processedCustomers]);
     const selectedCount = selectedCustomers.length;
-    const checkedAll = customers.length > 0 && selectedCount === customers.length;
+    const checkedAll = processedCustomers.length > 0 && selectedCount === processedCustomers.length;
     const selectedUser = selectedCustomers[0];
 
     const fetchCustomers = useCallback(async () => {
@@ -57,12 +70,14 @@ function ListCustomer() {
                 setUserToDelete(null);
                 await fetchCustomers();
                 setAlert({ type: 'success', message: 'Xóa khách hàng thành công' });
+                setTimeout(() => setAlert(null), 3000);
                 return;
             }
 
             throw new Error('Error Delete');
         } catch (error) {
             setAlert({ type: 'danger', message: error.response?.data?.error || 'Xóa khách hàng thất bại' });
+            setTimeout(() => setAlert(null), 3000);
         }
     }
 
@@ -165,7 +180,7 @@ function ListCustomer() {
                                     </div>
                                 </td>
                             </tr>
-                        ) : customers.length === 0 ? (
+                        ) : processedCustomers.length === 0 ? (
                             <tr>
                                 <td colSpan="6" className="py-16 text-center text-slate-500 font-medium">
                                     <div className="flex flex-col items-center justify-center gap-3">
@@ -176,7 +191,7 @@ function ListCustomer() {
                                 </td>
                             </tr>
                         ) : (
-                           customers.map((customer) => (
+                           processedCustomers.map((customer) => (
                                <CustomerItem key={customer.key} data={customer} onChangeCheckBox={handleChangeCheckBox} onDelete={() => triggerDeleteModal(customer.key)} />
                            ))
                         )}

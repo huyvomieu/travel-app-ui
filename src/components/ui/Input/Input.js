@@ -4,11 +4,19 @@ import { IoSearchOutline } from 'react-icons/io5';
 
 const cx = classNames.bind(styles);
 
-function Input({ placeholder }) {
+function Input({ placeholder, value, onChange, onKeyDown, ...rest }) {
     return (
         <div className={cx('wrapper')}>
             <IoSearchOutline className={cx('icon')} />
-            <input className={cx('input')} type="text" placeholder={placeholder} />
+            <input
+                className={cx('input')}
+                type="text"
+                placeholder={placeholder}
+                value={value}
+                onChange={onChange}
+                onKeyDown={onKeyDown}
+                {...rest}
+            />
         </div>
     );
 }

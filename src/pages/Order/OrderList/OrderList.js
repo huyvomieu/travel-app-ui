@@ -7,7 +7,8 @@ import { RxDownload } from 'react-icons/rx';
 import { useNavigate } from 'react-router-dom';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { getOrder } from '../../../services/OrderService';
 import { useLoading } from '../../../components/context/LoadingContext';
 import useQuery from '../../../hooks/useQuery';
@@ -19,25 +20,59 @@ const cx = classNames.bind(styles);
 function OrderList() {
     const navigate = useNavigate();
     const [orders, setOrders] = useState([]);
+    const [searchParams] = useSearchParams();
+    const [statusFilter, setStatusFilter] = useState('all');
+    const [sortFilter, setSortFilter] = useState('newest');
+
+    const qHeader = searchParams.get('q') || '';
+    const [qLocal, setQLocal] = useState('');
 
     const { setLoading } = useLoading();
 
-    const query = useQuery();
-    const filter = query.get('filter');
+    const processedOrders = useMemo(() => {
+        let result = Array.isArray(orders) ? [...orders] : [];
+        const q = qLocal || qHeader;
+        if (q) {
+            const lowerQ = q.toLowerCase();
+            result = result.filter(o => 
+                o.orderId?.toLowerCase().includes(lowerQ) || 
+                o.userInfo?.name?.toLowerCase().includes(lowerQ) || 
+                o.tourInfo?.title?.toLowerCase().includes(lowerQ)
+            );
+        }
+        
+        if (statusFilter === 'show') {
+            result = result.filter(o => o.status !== 'deleted'); // Assuming 'show' means not deleted or specific statuses
+        } else if (statusFilter === 'deleted') {
+            result = result.filter(o => o.status === 'deleted');
+        }
+
+        if (sortFilter === 'newest') {
+            result.reverse();
+        } else if (sortFilter === 'highest') {
+            result.sort((a, b) => b.total - a.total);
+        } else if (sortFilter === 'lowest') {
+            result.sort((a, b) => a.total - b.total);
+        }
+
+        return result;
+    }, [orders, qHeader, qLocal, statusFilter, sortFilter]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-                const res = await getOrder(null, 'GET', { filter });
-                setOrders(res);
+                const res = await getOrder(null, 'GET');
+                // API có thể trả về mảng trực tiếp hoặc object { data: [...] }
+                const list = Array.isArray(res) ? res : Array.isArray(res?.data) ? res.data : [];
+                setOrders(list);
             } catch (error) {
             } finally {
                 setLoading(false);
             }
         };
         fetchData();
-    }, [filter]);
+    }, []);
 
     function handleExport() {
         const worksheet = XLSX.utils.json_to_sheet(orders);
@@ -56,13 +91,14 @@ function OrderList() {
 
         saveAs(fileData, `DanhSachDonHang_${Date.now()}.xlsx`);
     }
-    function handleChangeFilter(value) {
-        navigate('/order?filter=' + value);
-    }
     return (
         <div className={cx('wrapper')}>
             <div className={cx('header')}>
-                <Input placeholder="Tìm kiếm đơn hàng..." />
+                <Input 
+                    placeholder="Tìm kiếm đơn hàng..." 
+                    value={qLocal}
+                    onChange={(e) => setQLocal(e.target.value)}
+                />
                 <Button outline classNames={cx('icon-filter')}>
                     <CiFilter className={cx('icon')} />
                 </Button>
@@ -82,7 +118,7 @@ function OrderList() {
                         </div>
                     </div>
                     <div className={cx('filter')}>
-                        <Select defaultValue="all" onValueChange={handleChangeFilter}>
+                        <Select defaultValue="all" onValueChange={setStatusFilter}>
                             <SelectTrigger className="w-[180px] h-16 border border-solid border-[#e5e5e5]">
                                 <SelectValue placeholder="Lọc theo" />
                             </SelectTrigger>
@@ -92,7 +128,7 @@ function OrderList() {
                                 <SelectItem value="deleted">Đơn hàng đã xóa</SelectItem>
                             </SelectContent>
                         </Select>
-                        <Select defaultValue="newest" onValueChange={handleChangeFilter}>
+                        <Select defaultValue="newest" onValueChange={setSortFilter}>
                             <SelectTrigger className="w-[180px] h-16 border border-solid border-[#e5e5e5]">
                                 <SelectValue placeholder="Sắp xếp theo" />
                             </SelectTrigger>
@@ -117,8 +153,8 @@ function OrderList() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {orders && orders.length > 0 ? (
-                                    orders.map((order) => (
+                                {processedOrders && processedOrders.length > 0 ? (
+                                    processedOrders.map((order) => (
                                         <tr
                                             key={order.orderId}
                                             onClick={() => navigate(`/order/${order.key}`)}

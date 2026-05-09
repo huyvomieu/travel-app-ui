@@ -1,6 +1,6 @@
 import * as httpRequest from '../utils/httpRequest';
 
-export const getDeleteItem = async (id, type, page, ...prop) => {
+export const getDeleteItem = async (id, type, page, options = {}) => {
     try {
         if (type?.toUpperCase() === 'DELETE') {
             const res = await httpRequest.delet('Item', {
@@ -9,7 +9,7 @@ export const getDeleteItem = async (id, type, page, ...prop) => {
             return res;
         } else {
             const res = await httpRequest.get('Item', {
-                params: { id, page, ...prop },
+                params: { id, page, ...options },
             });
             return res;
         }
