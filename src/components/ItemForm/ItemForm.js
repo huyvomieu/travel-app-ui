@@ -124,6 +124,11 @@ function ItemForm({ type = 'add', id }) {
             if (type === 'edit') {
                 try {
                     setLoading(true);
+                    // Upload ảnh mới lên Cloudinary nếu có, rồi mới gửi PUT request
+                    const newPicUrl = await uploadImageRef.current?.getLinkImage();
+                    if (newPicUrl) {
+                        state.data.pic = newPicUrl;
+                    }
                     const res = await postPutItem(state.data, 'PUT');
                     if (res.status === 200) {
                         dispatch(setAlert({ active: true, content: 'Cập nhật Tour thành công!' }));
